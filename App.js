@@ -1,11 +1,8 @@
-import { View, Text } from 'react-native'
-import React from 'react'
-import Welcome from './components/screens/Welcome'
-import Login from './components/auth/Login'
-import Registration from './components/auth/Registration'
-import List from './components/screens/List'
+import { StatusBar } from 'expo-status-bar';
+import { StyleSheet, Text, View } from 'react-native';
+import Login from "../E-Commerce/components/auth/Login";
 
-export default function App() {
+const App = () => {
   return (
     <View style={{flex:1}}>
       {/* <Welcome/> */}
@@ -13,5 +10,14 @@ export default function App() {
       <Registration/>
       {/* <List/> */}
     </View>
-  )
+  );
 }
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: '#fff',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+});
