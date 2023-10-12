@@ -7,9 +7,7 @@ import { View, Text } from "react-native";
 export default function Welcome() {
   return (
     <View style={styles.container}>
-    <View style={{flex:1}}>
-    <Image source={ require('../../assets/bluepic.png')} style={{width:500,height:400,marginTop:0}}/>
-    </View>
+      <View style={{marginLeft:10,marginRight:10}}>
       <Text
         style={{
           fontSize: 30,
@@ -63,15 +61,17 @@ export default function Welcome() {
        
       </View>
       </TouchableOpacity>
+      </View>
     </View>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
-    //flex:1,
+    flex:1,
     backgroundColor: "blue",
-    justifyContent: "center",
-    margin: 10,
+    
+    //justifyContent: "center",
+    //marginBottom:50
   },
 });
