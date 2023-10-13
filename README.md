@@ -6,6 +6,7 @@ Moloko Chris Poopedi
 [contributor 1]
 [contributor 2]
 ...
+
 **Overview**
 
 This E-Commerce app was created as a group project at CodeTribe in Polokwane, Limpopo. It allows users to browse and purchase products, add items to their cart, and checkout. The app is built with React Native and Expo, so it can be run on Android, iOS, and the web.
