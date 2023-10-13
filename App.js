@@ -3,11 +3,13 @@ import { StyleSheet, Text, View } from "react-native";
 import Login from "../E-Commerce/components/auth/Login";
 import Registration from "./components/auth/Registration";
 import Welcome from "./components/screens/Welcome";
+import Home from "./components/screens/Home";
 
 const App = () => {
   return (
     <View style={{ flex: 1 }}>
-      <Welcome />
+      {/* <Welcome /> */}
+      <Home />
       {/* <Login /> */}
       {/* <Registration /> */}
       {/* <List/> */}
