@@ -1,19 +1,42 @@
 import { StatusBar } from "expo-status-bar";
 import { StyleSheet, Text, View } from "react-native";
+import { NavigationContainer } from "@react-navigation/native";
+import { createStackNavigator } from "@react-navigation/stack";
 import Login from "../E-Commerce/components/auth/Login";
 import Registration from "./components/auth/Registration";
 import Welcome from "./components/screens/Welcome";
 import Home from "./components/screens/Home";
+const Stack = createStackNavigator();
 
 const App = () => {
   return (
-    <View style={{ flex: 1 }}>
-      {/* <Welcome /> */}
-      <Home />
-      {/* <Login /> */}
-      {/* <Registration /> */}
-      {/* <List/> */}
-    </View>
+    <NavigationContainer>
+      <Stack.Navigator initialRouteName="Welcome">
+        <Stack.Screen
+          name="Welcome"
+          component={Welcome}
+          options={{ headerShown: false }}
+        />
+
+        <Stack.Screen
+          name="Home"
+          component={Home}
+          options={{ headerShown: false }}
+        />
+
+        <Stack.Screen
+          name="Login"
+          component={Login}
+          options={{ headerShown: false }}
+        />
+
+        <Stack.Screen
+          name="Registration"
+          component={Registration}
+          options={{ headerShown: false }}
+        />
+      </Stack.Navigator>
+    </NavigationContainer>
   );
 };
 
