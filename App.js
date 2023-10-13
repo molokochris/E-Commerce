@@ -6,12 +6,13 @@ import Login from "../E-Commerce/components/auth/Login";
 import Registration from "./components/auth/Registration";
 import Welcome from "./components/screens/Welcome";
 import Home from "./components/screens/Home";
+import ViewItem from "./components/screens/ViewItem";
 const Stack = createStackNavigator();
 
 const App = () => {
   return (
     <NavigationContainer>
-      <Stack.Navigator initialRouteName="Welcome">
+      <Stack.Navigator initialRouteName="ViewItem">
         <Stack.Screen
           name="Welcome"
           component={Welcome}
@@ -33,6 +34,12 @@ const App = () => {
         <Stack.Screen
           name="Registration"
           component={Registration}
+          options={{ headerShown: false }}
+        />
+
+        <Stack.Screen
+          name="ViewItem"
+          component={ViewItem}
           options={{ headerShown: false }}
         />
       </Stack.Navigator>
