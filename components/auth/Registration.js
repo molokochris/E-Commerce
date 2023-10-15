@@ -67,7 +67,7 @@ export default function Registration() {
               style={{ width: "100%" }}
             />
           </View>
-           <Text style={{ marginTop: 20 }}>Password</Text>
+          <Text style={{ marginTop: 20 }}>Password</Text>
           <View
             style={{
               flexDirection: "row",

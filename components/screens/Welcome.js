@@ -1,66 +1,27 @@
 import React from "react";
-import { Button, Image, StyleSheet } from "react-native";
-import { TouchableOpacity } from "react-native";
-import { View, Text } from "react-native";
-
+import { View, Text, TouchableOpacity, StyleSheet } from "react-native";
+import { useNavigation } from "@react-navigation/native";
 
 export default function Welcome() {
+  const navigation = useNavigation();
+
   return (
     <View style={styles.container}>
-      <View style={{marginLeft:10,marginRight:10}}>
-      <Text
-        style={{
-          fontSize: 30,
-          marginTop: 500,
-          color: "white",
-          fontWeight: "bold",
-        }}
-      >
-        ECommerce
-      </Text>
-      <Text style={{ color: "white", fontSize: 15, marginBottom: 20 }}>
-        Buy easily on our online platform
-      </Text>
-      <TouchableOpacity>
-      <View
-        style={{
-          backgroundColor: "white",
-          height: 30,
-          color:'blue',
-          justifyContent: "center",
-          alignItems: "center",
-          borderWidth:1,
-          borderColor:'white',
-          borderRadius:16,
-          
-
-        }}
-      >
-        
-          <Text  style={{ color:'blue',}}>Login</Text>
-       
-      </View>
-      </TouchableOpacity>
-      <TouchableOpacity>
-      <View
-        style={{
-          marginTop: 20,
-          backgroundColor: "transparent",
-          height: 30,
-          color:'blue',
-          borderWidth:1,
-          borderColor:'white',
-          justifyContent: "center",
-          alignItems: "center",
-          alignContent: "center",
-          borderRadius:16
-        }}
-      >
-        
-          <Text style={{ color:'white',}}>Register</Text>
-       
-      </View>
-      </TouchableOpacity>
+      <View style={styles.contentContainer}>
+        <Text style={styles.title}>ECommerce</Text>
+        <Text style={styles.subtitle}>Buy easily on our online platform</Text>
+        <View style={styles.buttonContainer}>
+          <TouchableOpacity onPress={() => navigation.navigate("Login")}>
+            <View style={styles.loginButton}>
+              <Text style={{ color: "blue", fontWeight:'bold' }}>Login</Text>
+            </View>
+          </TouchableOpacity>
+          <TouchableOpacity onPress={() => navigation.navigate("Registration")}>
+            <View style={styles.registerButton}>
+              <Text style={{ color: "white" , fontWeight: 'bold'}}>Register</Text>
+            </View>
+          </TouchableOpacity>
+        </View>
       </View>
     </View>
   );
@@ -68,10 +29,50 @@ export default function Welcome() {
 
 const styles = StyleSheet.create({
   container: {
-    flex:1,
+    flex: 1,
     backgroundColor: "blue",
-    
-    //justifyContent: "center",
-    //marginBottom:50
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  contentContainer: {
+    marginLeft: 10,
+    marginRight: 10,
+    alignItems: "center",
+  },
+  title: {
+    fontSize: 30,
+    marginTop: 500,
+    color: "white",
+    fontWeight: "bold",
+  },
+  subtitle: {
+    color: "white",
+    fontSize: 15,
+    marginBottom: 20,
+  },
+  buttonContainer: {
+    marginTop: 20,
+    flexDirection: "col",
+    justifyContent: "space-between",
+  },
+  loginButton: {
+    width: 200,
+    height: 40,
+    justifyContent: "center",
+    alignItems: "center",
+    borderWidth: 1,
+    borderColor: "white",
+    backgroundColor: "white",
+    borderRadius: 16,
+    marginBottom: 10,
+  },
+  registerButton: {
+    width: 200,
+    height: 40,
+    justifyContent: "center",
+    alignItems: "center",
+    borderWidth: 1,
+    borderColor: "white",
+    borderRadius: 16,
   },
 });
