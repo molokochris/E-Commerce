@@ -7,6 +7,7 @@ import Registration from "./components/auth/Registration";
 import Welcome from "./components/screens/Welcome";
 import Home from "./components/screens/Home";
 import ViewItem from "./components/screens/ViewItem";
+import Checkout from "./components/screens/Checkout";
 const Stack = createStackNavigator();
 
 const App = () => {
@@ -40,6 +41,11 @@ const App = () => {
         <Stack.Screen
           name="ViewItem"
           component={ViewItem}
+          options={{ headerShown: false }}
+        />
+        <Stack.Screen
+          name="Checkout"
+          component={Checkout}
           options={{ headerShown: false }}
         />
       </Stack.Navigator>
