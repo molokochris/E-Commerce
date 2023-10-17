@@ -3,9 +3,43 @@ import { TextInput } from "react-native";
 import { StyleSheet, Text } from "react-native";
 import { View, TouchableOpacity } from "react-native";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
+import { firebase_auth } from "./FirebaseConfig";
+import { createUserWithEmailAndPassword } from "firebase/auth";
+import { useNavigation } from "@react-navigation/native";
 
 export default function Registration() {
+  const navigation = useNavigation();
   const [isPasswordSecure, setIsPasswordSecure] = useState(true);
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState(""); // New state for confirm password
+  const [loading, setLoading] = useState(false);
+  const auth = firebase_auth;
+
+  const signUp = async () => {
+    setLoading(true);
+    try {
+      if (password !== confirmPassword) {
+        alert("Passwords do not match.");
+        return;
+      }
+      
+      const response = await createUserWithEmailAndPassword(
+        auth,
+        email,
+        password
+      );
+      console.log(response);
+      alert("Registered successfully");
+      navigation.navigate("Login");
+    } catch (error) {
+      console.log(error);
+      alert("Sign up failed: " + error.message);
+    } finally {
+      setLoading(false);
+    }
+  };
+
   return (
     <View style={styles.container}>
       <View style={styles.welcome}>
@@ -26,9 +60,6 @@ export default function Registration() {
       <View style={styles.logincard}>
         <View style={{ flexDirection: "row" }}>
           <Text style={{ color: "blue", margin: 20, fontWeight: "bold" }}>
-            @
-          </Text>
-          <Text style={{ color: "blue", margin: 20, fontWeight: "bold" }}>
             ECommerce App
           </Text>
         </View>
@@ -41,9 +72,14 @@ export default function Registration() {
           <Text>Fullnames</Text>
           <TextInput style={{ borderWidth: 1, borderRadius: 10 }}></TextInput>
           <Text style={{ marginTop: 20 }}>Email</Text>
-          <TextInput style={{ borderWidth: 1, borderRadius: 10 }}></TextInput>
-          <Text style={{ marginTop: 20 }}>Password</Text>
+          <TextInput
+            style={{ borderWidth: 1, borderRadius: 10 }}
+            value={email}
+            autoCapitalize="none"
+            onChangeText={(text) => setEmail(text)}
+          ></TextInput>
 
+          <Text style={{ marginTop: 20 }}>Password</Text>
           <View
             style={{
               flexDirection: "row",
@@ -65,9 +101,13 @@ export default function Registration() {
             <TextInput
               secureTextEntry={isPasswordSecure}
               style={{ width: "100%" }}
+              value={password}
+              autoCapitalize="none"
+              onChangeText={(text) => setPassword(text)}
             />
           </View>
-          <Text style={{ marginTop: 20 }}>Password</Text>
+
+          <Text style={{ marginTop: 20 }}>Confirm Password</Text>
           <View
             style={{
               flexDirection: "row",
@@ -89,9 +129,13 @@ export default function Registration() {
             <TextInput
               secureTextEntry={isPasswordSecure}
               style={{ width: "50%" }}
+              value={confirmPassword}
+              autoCapitalize="none"
+              onChangeText={(text) => setConfirmPassword(text)}
             />
           </View>
-          <TouchableOpacity>
+
+          <TouchableOpacity onPress={signUp}>
             <View
               style={{
                 marginTop: 80,
@@ -110,7 +154,7 @@ export default function Registration() {
             </View>
           </TouchableOpacity>
           <View style={{ flexDirection: "row", justifyContent: "center" }}>
-            <Text style={{ color: "blue" }}>Already have account?</Text>
+            <Text style={{ color: "blue" }}>Already have an account?</Text>
             <Text style={{ color: "orange", fontWeight: "bold" }}>Login</Text>
           </View>
         </View>

@@ -1,135 +1,34 @@
-// import React, { useState } from "react";
-// import {
-//   View,
-//   Text,
-//   TextInput,
-//   Button,
-//   StyleSheet,
-//   TouchableOpacity,
-// } from "react-native";
-
-// const Login = () => {
-//   const [email, setEmail] = useState("");
-//   const [password, setPassword] = useState("");
-
-//   const handleLogin = () => {
-//     console.log("Email:", email);
-//     console.log("Password:", password);
-//   };
-
-//   return (
-//     <View
-//       style={{
-//         flex: 1,
-//         justifyContent: "center",
-//         alignItems: "center",
-//         backgroundColor: "blue",
-//       }}
-//     >
-//       <Text
-//         style={{
-//           fontSize: 24,
-//           fontWeight: "bold",
-//           marginBottom: 20,
-//           color: "white",
-//           marginBottom: 200,
-//           top: 170,
-//           marginHorizontal: 108,
-//           right: 100,
-//         }}
-//       >
-//         Hello, Welcome. back!
-//       </Text>
-
-//       <View
-//         style={{
-//           flex: 1,
-//           justifyContent: "center",
-//           alignItems: "center",
-//           backgroundColor: "white",
-//           borderTopRightRadius: 17,
-//           borderTopLeftRadius: 17,
-//           width: 400,
-//           height: 1000,
-//         }}
-//       >
-//         <Text style={{ color: "grey", width: 370, bottom: 70 }}>
-//           Let's learn with us again to improve and upgrade your skill with the
-//           best mentor and you will never regret
-//         </Text>
-//         <Text style={{ color: "black", fontWeight: "700", right: 130 }}>
-//           Email
-//         </Text>
-//         <TextInput
-//           value={email}
-//           onChangeText={(text) => setEmail(text)}
-//           style={{
-//             borderWidth: 1,
-//             width: 320,
-//             padding: 10,
-//             borderColor: "black",
-//             borderRadius: 10,
-//             marginBottom: 20,
-//             color: "black",
-//           }}
-//         />
-//         <Text style={{ color: "black", fontWeight: "700", right: 120 }}>
-//           Password
-//         </Text>
-//         <TextInput
-//           value={password}
-//           onChangeText={(text) => setPassword(text)}
-//           secureTextEntry
-//           style={{
-//             borderWidth: 1,
-//             width: 320,
-//             padding: 10,
-//             borderRadius: 10,
-//             marginBottom: 20,
-//             color: "black",
-//             borderColor: "black",
-//           }}
-//         />
-//         <Text
-//           style={{
-//             color: "blue",
-//             fontWeight: "bold",
-//             marginLeft: 190,
-//             marginBottom: 20,
-//           }}
-//         >
-//           Forgot Password
-//         </Text>
-//         <TouchableOpacity style={styles.btn}>Login</TouchableOpacity>
-
-//         <Text style={{ color: "blue", fontWeight: "bold", top: 10 }}>
-//           Dont have an account? Register
-//         </Text>
-//       </View>
-//     </View>
-//   );
-// };
-// const styles = StyleSheet.create({
-//   btn: {
-//     color: "white",
-//     borderRadius: 10,
-//     backgroundColor: "blue",
-//     width: 320,
-//     height: 40,
-//     alignItems: "center",
-//     paddingTop: 11,
-//   },
-// });
-// export default Login;
-
-import { useNavigation } from "@react-navigation/native";
-import React from "react";
+import React, { useState } from "react";
 import { TextInput } from "react-native";
 import { StyleSheet, Text } from "react-native";
 import { View, TouchableOpacity } from "react-native";
+import { firebase_auth } from "./FirebaseConfig";
+import { signInWithEmailAndPassword } from "firebase/auth";
+import { MaterialCommunityIcons } from "@expo/vector-icons";
+import { useNavigation } from "@react-navigation/native";
 
 export default function Login() {
   const navigation = useNavigation();
+  const [isPasswordSecure, setIsPasswordSecure] = useState(true);
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [loading, setLoading] = useState(false);
+  const auth = firebase_auth;
+
+  const signIn = async () => {
+    setLoading(true);
+    try {
+      const response = await signInWithEmailAndPassword(auth, email, password);
+      console.log(response);
+      alert("Logged in successfully");
+      navigation.navigate("Home");
+    } catch (error) {
+      console.log("error");
+      alert("Sign in failed:" + error.message);
+    } finally {
+      setLoading(false);
+    }
+  };
   return (
     <View style={styles.container}>
       <View style={styles.welcome}>
@@ -150,9 +49,6 @@ export default function Login() {
       <View style={styles.logincard}>
         <View style={{ flexDirection: "row" }}>
           <Text style={{ color: "blue", margin: 20, fontWeight: "bold" }}>
-            @
-          </Text>
-          <Text style={{ color: "blue", margin: 20, fontWeight: "bold" }}>
             ECommerce App
           </Text>
         </View>
@@ -163,15 +59,45 @@ export default function Login() {
         </Text>
         <View style={{ margin: 20 }}>
           <Text>Email</Text>
-          <TextInput style={{ borderWidth: 1, borderRadius: 10 }}></TextInput>
+          <TextInput
+            value={email}
+            style={{ borderWidth: 1, borderRadius: 10 }}
+            autoCapitalize="none"
+            onChangeText={(text) => setEmail(text)}
+          ></TextInput>
           <Text style={{ marginTop: 20 }}>Password</Text>
-          <TextInput style={{ borderWidth: 1, borderRadius: 10 }}></TextInput>
+          <View
+            style={{
+              flexDirection: "row",
+              width: "100%",
+              borderWidth: 1,
+              borderRadius: 10,
+            }}
+          >
+            <MaterialCommunityIcons
+              style={{ marginLeft: 5 }}
+              name={isPasswordSecure ? "eye-off" : "eye"}
+              size={28}
+              onPress={() =>
+                isPasswordSecure
+                  ? setIsPasswordSecure(false)
+                  : setIsPasswordSecure(true)
+              }
+            />
+            <TextInput
+              secureTextEntry={isPasswordSecure}
+              style={{ width: "100%" }}
+              value={password}
+              autoCapitalize="none"
+              onChangeText={(text) => setPassword(text)}
+            />
+          </View>
           <Text
             style={{ textAlign: "right", color: "blue", fontWeight: "bold" }}
           >
             Forgot Password?
           </Text>
-          <TouchableOpacity>
+          <TouchableOpacity onPress={signIn}>
             <View
               style={{
                 marginTop: 80,
@@ -186,17 +112,12 @@ export default function Login() {
                 borderRadius: 16,
               }}
             >
-              <Text
-                style={{ color: "white" }}
-                onPress={() => navigation.navigate("Home")}
-              >
-                Login
-              </Text>
+              <Text style={{ color: "white" }}>Login</Text>
             </View>
           </TouchableOpacity>
           <View style={{ flexDirection: "row", justifyContent: "center" }}>
             <Text style={{ color: "blue" }}>Don't you have account?</Text>
-            <Text style={{ color: "orange", fontWeight: "bold" }}>
+            <Text onPress={()=>navigation.navigate("Registration")} style={{ color: "orange", fontWeight: "bold" }}>
               Create one
             </Text>
           </View>
