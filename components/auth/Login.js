@@ -2,10 +2,10 @@ import React, { useState } from "react";
 import { TextInput } from "react-native";
 import { StyleSheet, Text } from "react-native";
 import { View, TouchableOpacity } from "react-native";
-import { firebase_auth } from "./FirebaseConfig";
-import { signInWithEmailAndPassword } from "firebase/auth";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import { useNavigation } from "@react-navigation/native";
+import firebase from 'firebase/compat/app';
+import 'firebase/compat/auth';
 
 export default function Login() {
   const navigation = useNavigation();
@@ -13,22 +13,40 @@ export default function Login() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
-  const auth = firebase_auth;
+
+  const firebaseConfig = {
+    apiKey: "AIzaSyCXQpFF1n301P_jpAk8Gxh2hYr1VdDy-Xg",
+    authDomain: "e-commerce-284f2.firebaseapp.com",
+    projectId: "e-commerce-284f2",
+    storageBucket: "e-commerce-284f2.appspot.com",
+    messagingSenderId: "652686747106",
+    appId: "1:652686747106:web:dbc2cb357c6722f5af85bb"
+  };
+
+  if (!firebase.apps.length) {
+    firebase.initializeApp(firebaseConfig);
+  }
 
   const signIn = async () => {
     setLoading(true);
     try {
-      const response = await signInWithEmailAndPassword(auth, email, password);
-      console.log(response);
-      alert("Logged in successfully");
-      navigation.navigate("Home");
+      if (email === "admin@email.com" && password === "@Admin123") {
+       
+        setLoading(false);
+        alert("Logged in successfully");
+        navigation.navigate("Form");
+      } else {
+      
+        setLoading(false);
+        alert("Invalid email or password");
+      }
     } catch (error) {
-      console.log("error");
-      alert("Sign in failed:" + error.message);
-    } finally {
+      console.log(error);
+      alert("Sign in failed: " + error.message);
       setLoading(false);
     }
   };
+
   return (
     <View style={styles.container}>
       <View style={styles.welcome}>
@@ -43,7 +61,7 @@ export default function Login() {
           Hello,
         </Text>
         <Text style={{ color: "white", fontWeight: "bold", fontSize: 30 }}>
-          Wecome back!
+          Welcome back!
         </Text>
       </View>
       <View style={styles.logincard}>
@@ -116,8 +134,11 @@ export default function Login() {
             </View>
           </TouchableOpacity>
           <View style={{ flexDirection: "row", justifyContent: "center" }}>
-            <Text style={{ color: "blue" }}>Don't you have account?</Text>
-            <Text onPress={()=>navigation.navigate("Registration")} style={{ color: "orange", fontWeight: "bold" }}>
+            <Text style={{ color: "blue" }}>Don't have an account?</Text>
+            <Text
+              onPress={() => navigation.navigate("Registration")}
+              style={{ color: "orange", fontWeight: "bold" }}
+            >
               Create one
             </Text>
           </View>
@@ -126,6 +147,7 @@ export default function Login() {
     </View>
   );
 }
+
 const styles = StyleSheet.create({
   container: {
     flex: 1,

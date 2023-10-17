@@ -4,17 +4,18 @@ import { NavigationContainer } from "@react-navigation/native";
 import { createStackNavigator } from "@react-navigation/stack";
 import Login from "../E-Commerce/components/auth/Login";
 import Registration from "./components/auth/Registration";
-// import Welcome from "./screens/Welcome";
 import Home from "./screens/Home";
 import ViewItem from "./screens/ViewItem";
 import Checkout from "./screens/Checkout";
 import Welcome from "./screens/Welcome";
+import FormPage from "./components/admin/Form";
+import ProductsPage from "./components/admin/Products";
 const Stack = createStackNavigator();
 
 const App = () => {
   return (
     <NavigationContainer>
-      <Stack.Navigator initialRouteName="Welcome">
+      <Stack.Navigator initialRouteName="Form">
         <Stack.Screen
           name="Welcome"
           component={Welcome}
@@ -49,6 +50,17 @@ const App = () => {
           component={Checkout}
           options={{ headerShown: false }}
         />
+<Stack.Screen
+          name="Form"
+          component={FormPage}
+          options={{ headerShown: false }}
+        />
+<Stack.Screen
+          name="Products"
+          component={ProductsPage}
+          options={{ headerShown: false }}
+        />
+
       </Stack.Navigator>
     </NavigationContainer>
   );

@@ -3,18 +3,30 @@ import { TextInput } from "react-native";
 import { StyleSheet, Text } from "react-native";
 import { View, TouchableOpacity } from "react-native";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
-import { firebase_auth } from "./FirebaseConfig";
-import { createUserWithEmailAndPassword } from "firebase/auth";
 import { useNavigation } from "@react-navigation/native";
+import firebase from 'firebase/compat/app';
+import 'firebase/compat/auth';
 
 export default function Registration() {
   const navigation = useNavigation();
   const [isPasswordSecure, setIsPasswordSecure] = useState(true);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [confirmPassword, setConfirmPassword] = useState(""); // New state for confirm password
+  const [confirmPassword, setConfirmPassword] = useState("");
   const [loading, setLoading] = useState(false);
-  const auth = firebase_auth;
+
+  const firebaseConfig = {
+    apiKey: "AIzaSyCXQpFF1n301P_jpAk8Gxh2hYr1VdDy-Xg",
+    authDomain: "e-commerce-284f2.firebaseapp.com",
+    projectId: "e-commerce-284f2",
+    storageBucket: "e-commerce-284f2.appspot.com",
+    messagingSenderId: "652686747106",
+    appId: "1:652686747106:web:dbc2cb357c6722f5af85bb"
+  };
+
+  if (!firebase.apps.length) {
+    firebase.initializeApp(firebaseConfig);
+  }
 
   const signUp = async () => {
     setLoading(true);
@@ -23,12 +35,8 @@ export default function Registration() {
         alert("Passwords do not match.");
         return;
       }
-      
-      const response = await createUserWithEmailAndPassword(
-        auth,
-        email,
-        password
-      );
+
+      const response = await firebase.auth().createUserWithEmailAndPassword(email, password);
       console.log(response);
       alert("Registered successfully");
       navigation.navigate("Login");
@@ -147,35 +155,56 @@ export default function Registration() {
                 justifyContent: "center",
                 alignItems: "center",
                 alignContent: "center",
-                borderRadius: 16,
-              }}
+                borderRadius: 16              }}
             >
-              <Text style={{ color: "white" }}>Create account</Text>
+              <Text style={{ color: "white", fontWeight: "bold" }}>
+                Create Account
+              </Text>
             </View>
           </TouchableOpacity>
-          <View style={{ flexDirection: "row", justifyContent: "center" }}>
-            <Text style={{ color: "blue" }}>Already have an account?</Text>
-            <Text style={{ color: "orange", fontWeight: "bold" }}>Login</Text>
-          </View>
+
+          <Text
+            style={{
+              textAlign: "center",
+              marginTop: 20,
+              color: "grey",
+              fontWeight: "bold",
+            }}
+          >
+            Already have an account?{" "}
+            <Text
+              style={{ color: "blue" }}
+              onPress={() => navigation.navigate("Login")}
+            >
+              Login
+            </Text>
+          </Text>
         </View>
       </View>
     </View>
   );
 }
+
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "blue",
+    backgroundColor: "#fff",
+    alignItems: "center",
+    justifyContent: "center",
   },
   welcome: {
-    flex: 1,
-    backgroundColor: "",
-    marginTop: 30,
+    flex: 0.3,
+    backgroundColor: "blue",
+    width: "100%",
+    alignItems: "center",
+    justifyContent: "center",
   },
   logincard: {
-    flex: 4,
-    backgroundColor: "white",
-    borderTopEndRadius: 20,
-    borderTopLeftRadius: 16,
+    flex: 0.7,
+    width: "100%",
+    backgroundColor: "#fff",
+    borderTopLeftRadius: 50,
+    borderTopRightRadius: 50,
+    marginTop: -50,
   },
 });
