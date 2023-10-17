@@ -122,12 +122,14 @@
 // });
 // export default Login;
 
+import { useNavigation } from "@react-navigation/native";
 import React from "react";
 import { TextInput } from "react-native";
 import { StyleSheet, Text } from "react-native";
 import { View, TouchableOpacity } from "react-native";
 
 export default function Login() {
+  const navigation = useNavigation();
   return (
     <View style={styles.container}>
       <View style={styles.welcome}>
@@ -184,7 +186,12 @@ export default function Login() {
                 borderRadius: 16,
               }}
             >
-              <Text style={{ color: "white" }}>Login</Text>
+              <Text
+                style={{ color: "white" }}
+                onPress={() => navigation.navigate("Home")}
+              >
+                Login
+              </Text>
             </View>
           </TouchableOpacity>
           <View style={{ flexDirection: "row", justifyContent: "center" }}>
