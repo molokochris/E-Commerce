@@ -4,10 +4,11 @@ import { NavigationContainer } from "@react-navigation/native";
 import { createStackNavigator } from "@react-navigation/stack";
 import Login from "../E-Commerce/components/auth/Login";
 import Registration from "./components/auth/Registration";
-import Welcome from "./components/screens/Welcome";
-import Home from "./components/screens/Home";
-import ViewItem from "./components/screens/ViewItem";
-import Checkout from "./components/screens/Checkout";
+// import Welcome from "./screens/Welcome";
+import Home from "./screens/Home";
+import ViewItem from "./screens/ViewItem";
+import Checkout from "./screens/Checkout";
+import Welcome from "./screens/Welcome";
 const Stack = createStackNavigator();
 
 const App = () => {

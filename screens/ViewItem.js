@@ -7,11 +7,11 @@ import {
   Text,
   View,
 } from "react-native";
-import redPeppers from "../../assets/peppers.jpg";
-import back from "../../assets/back.png";
-import heart from "../../assets/heart.png";
-import inventory from "../../assets/inventory.png";
-import rating from "../../assets/rating.png";
+import redPeppers from "../assets/peppers.jpg";
+import back from "../assets/back.png";
+import heart from "../assets/heart.png";
+import inventory from "../assets/inventory.png";
+import rating from "../assets/rating.png";
 import { useState } from "react";
 import { FlatList } from "react-native";
 // import OnboardingItem from "./components/OnboardingItem";
