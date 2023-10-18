@@ -1,5 +1,4 @@
-import { useNavigation } from "@react-navigation/native";
-import React from "react";
+import React, { useState, useEffect } from "react";
 import {
   View,
   ScrollView,
@@ -13,52 +12,79 @@ import {
 } from "react-native";
 import { Card } from "react-native-elements";
 import Icon from "react-native-vector-icons/Ionicons";
-const TopData = [
-  {
-    id: "1",
-    name: "Broccoli",
-    description: "monate",
-    weight: "500g",
-    price: "$4/kg",
-    image: require("../assets/brocoli.jpeg"),
-  },
-  {
-    id: "2",
-    name: "Cedang",
-    weight: "100g",
-    price: "100RS/kg",
-    image: require("../assets/banana.jpeg"),
-  },
-];
-const RecomData = [
-  {
-    id: "1",
-    name: "Cedang",
-    weight: "100g",
-    price: "100RS/kg",
-    image: require("../assets/Avo.jpeg"),
-  },
-  {
-    id: "2",
-    name: "Cedang",
-    weight: "100g",
-    price: "100RS/kg",
-    image: require("../assets/oranges.jpeg"),
-  },
-];
+import firebase from "firebase/compat/app";
+import "firebase/compat/firestore";
+import "firebase/compat/storage";
+
+const firebaseConfig = {
+  apiKey: "AIzaSyCXQpFF1n301P_jpAk8Gxh2hYr1VdDy-Xg",
+  authDomain: "e-commerce-284f2.firebaseapp.com",
+  projectId: "e-commerce-284f2",
+  storageBucket: "e-commerce-284f2.appspot.com",
+  messagingSenderId: "652686747106",
+  appId: "1:652686747106:web:dbc2cb357c6722f5af85bb",
+};
+
+if (!firebase.apps.length) {
+  firebase.initializeApp(firebaseConfig);
+}
+
+const db = firebase.firestore();
+const storage = firebase.storage(); 
+
 const Home = () => {
+  const [topData, setTopData] = useState([]);
+  const [recomData, setRecomData] = useState([]);
+  const [selectedCategory, setSelectedCategory] = useState("All");
+
+  const fetchProducts = async () => {
+    try {
+      const productsSnapshot = await db.collection("products").get();
+      const data = [];
+
+      for (const doc of productsSnapshot.docs) {
+        const productData = doc.data();
+        const imageRef = storage.refFromURL(productData.image); 
+        const imageUrl = await imageRef.getDownloadURL();
+        data.push({
+          id: doc.id,
+          ...productData,
+          imageURL: imageUrl,
+          category: productData.category, 
+        });
+      }
+
+      setTopData(data);
+      
+    } catch (error) {
+      console.error("Error fetching data:", error);
+    }
+  };
+
+  useEffect(() => {
+    fetchProducts();
+  }, []);
+
   const renderItem = ({ item }) => (
     <View style={styles.itemContainer}>
-      <Image source={item.image} style={styles.itemImage} />
-      <Text style={styles.itemName}>{item.name}</Text>
-      <Text style={styles.itemName}>Weight:{item.weight}</Text>
+      <Image source={{ uri: item.imageURL }} style={styles.itemImage} />
+      <Text style={styles.itemName}>{item.productName}</Text>
+      <Text style={styles.itemName}>Weight: {item.weight}</Text>
       <Text style={styles.itemPrice}>{item.price}</Text>
       <TouchableOpacity style={styles.addIconContainer}>
         <Icon name="add-circle" size={30} color="green" />
       </TouchableOpacity>
     </View>
   );
-  const navigation = useNavigation();
+
+  const filterProductsByCategory = (category) => {
+    setSelectedCategory(category);
+  };
+
+  const filteredTopData = topData.filter(
+    (item) =>
+      selectedCategory === "All" || item.category === selectedCategory
+  );
 
   return (
     <SafeAreaView style={{ flex: 1 }}>
@@ -108,20 +134,70 @@ const Home = () => {
         </View>
         <ScrollView horizontal={true} showsHorizontalScrollIndicator={false}>
           <View style={styles.categoryButtons}>
-            <TouchableOpacity style={{ width: 50, marginHorizontal: 10 }}>
-              <Text style={styles.categoryButtonText}>All</Text>
+            <TouchableOpacity
+              style={{ width: 50, marginHorizontal: 10 }}
+              onPress={() => filterProductsByCategory("All")}
+            >
+              <Text
+                style={[
+                  styles.categoryButtonText,
+                  selectedCategory === "All" && { fontWeight: "bold"},
+                ]}
+              >
+                All
+              </Text>
             </TouchableOpacity>
-            <TouchableOpacity style={{ width: 80, marginHorizontal: 10 }}>
-              <Text style={styles.categoryButtonText}>Vegatables</Text>
+            <TouchableOpacity
+              style={{ width: 80, marginHorizontal: 10 }}
+              onPress={() => filterProductsByCategory("Vegetables")}
+            >
+              <Text
+                style={[
+                  styles.categoryButtonText,
+                  selectedCategory === "Vegetables" && { fontWeight: "bold" },
+                ]}
+              >
+                Vegetables
+              </Text>
             </TouchableOpacity>
-            <TouchableOpacity style={{ width: 60, marginHorizontal: 10 }}>
-              <Text style={styles.categoryButtonText}>Fish</Text>
+            <TouchableOpacity
+              style={{ width: 60, marginHorizontal: 10 }}
+              onPress={() => filterProductsByCategory("Fish")}
+            >
+              <Text
+                style={[
+                  styles.categoryButtonText,
+                  selectedCategory === "Fish" && { fontWeight: "bold" },
+                ]}
+              >
+                Fish
+              </Text>
             </TouchableOpacity>
-            <TouchableOpacity style={{ width: 60, marginHorizontal: 10 }}>
-              <Text style={styles.categoryButtonText}>Fruits</Text>
+            <TouchableOpacity
+              style={{ width: 60, marginHorizontal: 10 }}
+              onPress={() => filterProductsByCategory("Fruits")}
+            >
+              <Text
+                style={[
+                  styles.categoryButtonText,
+                  selectedCategory === "Fruits" && { fontWeight: "bold" },
+                ]}
+              >
+                Fruits
+              </Text>
             </TouchableOpacity>
-            <TouchableOpacity style={{ width: 60, marginHorizontal: 10 }}>
-              <Text style={styles.categoryButtonText}>Meat</Text>
+            <TouchableOpacity
+              style={{ width: 60, marginHorizontal: 10 }}
+              onPress={() => filterProductsByCategory("Meat")}
+            >
+              <Text
+                style={[
+                  styles.categoryButtonText,
+                  selectedCategory === "Meat" && { fontWeight: "bold" },
+                ]}
+              >
+                Meat
+              </Text>
             </TouchableOpacity>
           </View>
         </ScrollView>
@@ -145,34 +221,13 @@ const Home = () => {
             </TouchableOpacity>
           </View>
           <FlatList
-            data={TopData}
+            data={filteredTopData}
             renderItem={renderItem}
             keyExtractor={(item) => item.id}
             numColumns={2}
             contentContainerStyle={styles.itemsContainer}
           />
-          <View
-            style={{
-              flexDirection: "row",
-              justifyContent: "space-between",
-              alignItems: "center",
-              paddingVertical: 16,
-            }}
-          >
-            <Text style={{ fontWeight: "bold", fontSize: 30 }}>
-              Recommendation
-            </Text>
-            <TouchableOpacity>
-              <Text style={{ fontWeight: "bold", fontSize: 10 }}>SHOW ALL</Text>
-            </TouchableOpacity>
-          </View>
-          <FlatList
-            data={RecomData}
-            renderItem={renderItem}
-            keyExtractor={(item) => item.id}
-            numColumns={2}
-            contentContainerStyle={styles.itemsContainer}
-          />
+       
         </ScrollView>
         <View
           style={{
@@ -240,7 +295,7 @@ const styles = StyleSheet.create({
     marginTop: 5,
     marginBottom: 10,
     marginLeft: 10,
-    height: 100,
+    height: 40,
   },
   categoryButtonText: {
     fontSize: 16,
