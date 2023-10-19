@@ -5,6 +5,7 @@ import {
   ScrollView,
   StyleSheet,
   Text,
+  TouchableOpacity,
   View,
 } from "react-native";
 import redPeppers from "../assets/peppers.jpg";
@@ -14,22 +15,19 @@ import inventory from "../assets/inventory.png";
 import rating from "../assets/rating.png";
 import { useState } from "react";
 import { FlatList } from "react-native";
+import { tomato } from "color-name";
 // import OnboardingItem from "./components/OnboardingItem";
 
-export default function ViewItem() {
-  // let images = [
-  //   { id: 1, image: require("./assets/peppers.jpg") },
-  //   { id: 2, image: require("./assets/peppers1.jpg") },
-  //   { id: 3, image: require("./assets/peppers2.jpg") },
-  //   { id: 4, image: require("./assets/peppers3.jpg") },
-  // ];
+export default function ViewItem({ navigation, route }) {
+  const [qty, setQty] = useState(1);
   const [size, setSize] = useState(15);
-
+  const { item } = route.params;
+  // console.log(item.productName);
   const increment = () => {
-    setSize(size + 15);
+    setQty(qty + 1);
   };
   const decrement = () => {
-    setSize(size - 15);
+    setQty(qty - 1);
   };
 
   return (
@@ -37,7 +35,9 @@ export default function ViewItem() {
       <StatusBar translucent={false} backgroundColor="white" />
       <ScrollView showsVerticalScrollIndicator={false}>
         <View style={[styles.head, { alignItems: "center" }]}>
-          <Image source={back} style={{ width: 50, height: 20 }} />
+          <TouchableOpacity onPress={() => navigation.navigate("Home")}>
+            <Image source={back} style={{ width: 50, height: 20 }} />
+          </TouchableOpacity>
           <Text
             style={{
               alignSelf: "center",
@@ -46,12 +46,13 @@ export default function ViewItem() {
               marginLeft: 70,
             }}
           >
-            Bell Pepper
+            {item.productName}
           </Text>
         </View>
         <View style={{ alignSelf: "center" }}>
           <Text style={{ fontWeight: 500, fontSize: 18, color: "#219653" }}>
-            R 4,99 / Kg
+            {/* R 4,99 / Kg */}
+            {item.weight}
           </Text>
         </View>
         <View style={{ flexDirection: "column" }}>
@@ -60,7 +61,7 @@ export default function ViewItem() {
             renderItem={({ item }) => <OnboardingItem item={item} />}
           /> */}
           <Image
-            source={redPeppers}
+            source={{ uri: item.imageURL }}
             style={{
               resizeMode: "center",
               width: "90%",
@@ -72,7 +73,6 @@ export default function ViewItem() {
         </View>
         <View style={{ justifyContent: "center", flexDirection: "row" }}>
           <Pressable
-            onPress={increment}
             style={{
               height: 40,
               width: 40,
@@ -81,6 +81,8 @@ export default function ViewItem() {
               justifyContent: "center",
               alignItems: "center",
             }}
+            onPress={decrement}
+            disabled={qty < 2 ? true : false}
           >
             <Text style={{ color: "gray", fontSize: 20, fontWeight: 500 }}>
               -
@@ -94,7 +96,7 @@ export default function ViewItem() {
               alignItems: "center",
             }}
           >
-            <Text>{size}</Text>
+            <Text>{qty}</Text>
           </View>
           <Pressable
             style={{
@@ -105,6 +107,7 @@ export default function ViewItem() {
               justifyContent: "center",
               alignItems: "center",
             }}
+            onPress={increment}
           >
             <Text style={{ color: "gray", fontSize: 20, fontWeight: 500 }}>
               +
@@ -158,7 +161,7 @@ export default function ViewItem() {
             borderRadius: 8,
           }}
         />
-        <Pressable
+        <TouchableOpacity
           style={{
             width: "75%",
             backgroundColor: "#219653",
@@ -166,11 +169,12 @@ export default function ViewItem() {
             paddingVertical: 20,
             borderRadius: 8,
           }}
+          onPress={() => navigation.navigate("Checkout")}
         >
           <Text style={{ color: "whitesmoke", fontWeight: "bold" }}>
             Add to cart
           </Text>
-        </Pressable>
+        </TouchableOpacity>
       </View>
     </View>
   );

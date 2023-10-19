@@ -9,12 +9,14 @@ import {
   TouchableOpacity,
   FlatList,
   StyleSheet,
+  Pressable,
 } from "react-native";
 import { Card } from "react-native-elements";
 import Icon from "react-native-vector-icons/Ionicons";
 import firebase from "firebase/compat/app";
 import "firebase/compat/firestore";
 import "firebase/compat/storage";
+import { useNavigation } from "@react-navigation/core";
 
 const firebaseConfig = {
   apiKey: "AIzaSyCXQpFF1n301P_jpAk8Gxh2hYr1VdDy-Xg",
@@ -36,7 +38,29 @@ const Home = () => {
   const [topData, setTopData] = useState([]);
   const [recomData, setRecomData] = useState([]);
   const [selectedCategory, setSelectedCategory] = useState("All");
+  const navigation = useNavigation();
 
+  //Add Items to Cart
+  const [cartItems, setCartItems] = useState([]);
+  console.log(cartItems);
+
+  const addToCart = (item) => {
+    const isAvailItem = cartItems.find((i) => i.id === item.id);
+    if (isAvailItem) {
+      setCartItems(
+        cartItems.map((i) => {
+          if (i.id === item.id) {
+            return { ...i, qty: i.qty + 1 };
+          }
+          return i;
+        })
+      );
+    } else {
+      setCartItems([...cartItems, { ...item, qty: 1 }]);
+    }
+  };
+
+  // console.log(cartItems);
   const fetchProducts = async () => {
     try {
       const productsSnapshot = await db.collection("products").get();
@@ -65,15 +89,21 @@ const Home = () => {
   }, []);
 
   const renderItem = ({ item }) => (
-    <View style={styles.itemContainer}>
+    <Pressable
+      style={styles.itemContainer}
+      onPress={() => navigation.navigate("ViewItem", { item: item })}
+    >
       <Image source={{ uri: item.imageURL }} style={styles.itemImage} />
       <Text style={styles.itemName}>{item.productName}</Text>
       <Text style={styles.itemName}>Weight: {item.weight}</Text>
       <Text style={styles.itemPrice}>{item.price}</Text>
-      <TouchableOpacity style={styles.addIconContainer}>
+      <TouchableOpacity
+        style={styles.addIconContainer}
+        onPress={() => addToCart(item)}
+      >
         <Icon name="add-circle" size={30} color="green" />
       </TouchableOpacity>
-    </View>
+    </Pressable>
   );
 
   const filterProductsByCategory = (category) => {

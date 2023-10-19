@@ -124,14 +124,14 @@ const styles = StyleSheet.create({
     fontSize: 18,
     left: 20,
     bottom: -55,
-    fontWeight: 800,
+    // fontWeight: 800,
   },
   cardHo: {
     color: "#ffffff",
     fontSize: 14,
     left: 20,
     bottom: -65,
-    fontWeight: 700,
+    // fontWeight: 700,
   },
   cardExp: {
     color: "#ffffff",
