@@ -10,12 +10,13 @@ import Checkout from "./screens/Checkout";
 import Welcome from "./screens/Welcome";
 import FormPage from "./components/admin/Form";
 import ProductsPage from "./components/admin/Products";
+import Cart from "./screens/Cart";
 const Stack = createStackNavigator();
 
 const App = () => {
   return (
     <NavigationContainer>
-      <Stack.Navigator initialRouteName="Form">
+      <Stack.Navigator initialRouteName="Cart">
         <Stack.Screen
           name="Welcome"
           component={Welcome}
@@ -53,6 +54,11 @@ const App = () => {
 <Stack.Screen
           name="Form"
           component={FormPage}
+          options={{ headerShown: false }}
+        />
+<Stack.Screen
+          name="Cart"
+          component={Cart}
           options={{ headerShown: false }}
         />
 <Stack.Screen

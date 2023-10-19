@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
-import { View, Text, TextInput, TouchableOpacity, Picker, StyleSheet } from 'react-native';
+import { View, Text, TextInput, TouchableOpacity, StyleSheet } from 'react-native';
 import Icon from "react-native-vector-icons/Ionicons";
 import firebase from 'firebase/compat/app';
+import { Picker } from '@react-native-picker/picker';
 import 'firebase/firestore';
 
 const firebaseConfig = {
