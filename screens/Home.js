@@ -9,12 +9,14 @@ import {
   TouchableOpacity,
   FlatList,
   StyleSheet,
+  Pressable,
 } from "react-native";
 import { Card } from "react-native-elements";
 import Icon from "react-native-vector-icons/Ionicons";
 import firebase from "firebase/compat/app";
 import "firebase/compat/firestore";
 import "firebase/compat/storage";
+import { useNavigation } from "@react-navigation/core";
 
 const firebaseConfig = {
   apiKey: "AIzaSyCXQpFF1n301P_jpAk8Gxh2hYr1VdDy-Xg",
@@ -30,13 +32,20 @@ if (!firebase.apps.length) {
 }
 
 const db = firebase.firestore();
-const storage = firebase.storage(); 
+const storage = firebase.storage();
 
 const Home = () => {
   const [topData, setTopData] = useState([]);
   const [recomData, setRecomData] = useState([]);
   const [selectedCategory, setSelectedCategory] = useState("All");
+  const navigation = useNavigation();
 
+  //Add Items to Cart
+  // console.log(cartItems);
+
+  
+
+  // console.log(cartItems);
   const fetchProducts = async () => {
     try {
       const productsSnapshot = await db.collection("products").get();
@@ -44,18 +53,17 @@ const Home = () => {
 
       for (const doc of productsSnapshot.docs) {
         const productData = doc.data();
-        const imageRef = storage.refFromURL(productData.image); 
+        const imageRef = storage.refFromURL(productData.image);
         const imageUrl = await imageRef.getDownloadURL();
         data.push({
           id: doc.id,
           ...productData,
           imageURL: imageUrl,
-          category: productData.category, 
+          category: productData.category,
         });
       }
 
       setTopData(data);
-      
     } catch (error) {
       console.error("Error fetching data:", error);
     }
@@ -66,15 +74,21 @@ const Home = () => {
   }, []);
 
   const renderItem = ({ item }) => (
-    <View style={styles.itemContainer}>
+    <Pressable
+      style={styles.itemContainer}
+      onPress={() => navigation.navigate("ViewItem", { item: item })}
+    >
       <Image source={{ uri: item.imageURL }} style={styles.itemImage} />
       <Text style={styles.itemName}>{item.productName}</Text>
       <Text style={styles.itemName}>Weight: {item.weight}</Text>
       <Text style={styles.itemPrice}>{item.price}</Text>
-      <TouchableOpacity style={styles.addIconContainer}>
+      <TouchableOpacity
+        style={styles.addIconContainer}
+        // onPress={() => addToCart(item)}
+      >
         <Icon name="add-circle" size={30} color="green" />
       </TouchableOpacity>
-    </View>
+    </Pressable>
   );
 
   const filterProductsByCategory = (category) => {
@@ -82,8 +96,7 @@ const Home = () => {
   };
 
   const filteredTopData = topData.filter(
-    (item) =>
-      selectedCategory === "All" || item.category === selectedCategory
+    (item) => selectedCategory === "All" || item.category === selectedCategory
   );
 
   return (
@@ -141,7 +154,7 @@ const Home = () => {
               <Text
                 style={[
                   styles.categoryButtonText,
-                  selectedCategory === "All" && { fontWeight: "bold"},
+                  selectedCategory === "All" && { fontWeight: "bold" },
                 ]}
               >
                 All
@@ -227,7 +240,6 @@ const Home = () => {
             numColumns={2}
             contentContainerStyle={styles.itemsContainer}
           />
-       
         </ScrollView>
         <View
           style={{
@@ -244,7 +256,7 @@ const Home = () => {
             <Icon style={{ color: "lightgrey" }} name="search" size={30} />
           </TouchableOpacity>
           <TouchableOpacity>
-            <Icon style={{ color: "lightgrey" }} name="" size={30} />
+            <Icon style={{ color: "lightgrey" }} name="cart" size={30} />
           </TouchableOpacity>
           <TouchableOpacity>
             <Icon style={{ color: "lightgrey" }} name="person" size={30} />

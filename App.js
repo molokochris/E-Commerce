@@ -11,6 +11,8 @@ import Welcome from "./screens/Welcome";
 import FormPage from "./components/admin/Form";
 import ProductsPage from "./components/admin/Products";
 import TestForm from "./components/admin/TestForm";
+
+import Cart from "./screens/Cart";
 const Stack = createStackNavigator();
 
 const App = () => {
@@ -62,6 +64,11 @@ const App = () => {
           options={{ headerShown: false }}
         />
 
+<Stack.Screen
+          name="Cart"
+          component={Cart}
+          options={{ headerShown: false }}
+        />
         <Stack.Screen
           name="Products"
           component={ProductsPage}
