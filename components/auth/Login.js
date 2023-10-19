@@ -31,14 +31,13 @@ export default function Login() {
     setLoading(true);
     try {
       if (email === "admin@email.com" && password === "@Admin123") {
-       
         setLoading(false);
-        alert("Logged in successfully");
+        alert("Logged in as admin");
         navigation.navigate("Form");
       } else {
-      
         setLoading(false);
-        alert("Invalid email or password");
+        alert("Logged in as a regular user");
+        navigation.navigate("Home");
       }
     } catch (error) {
       console.log(error);
@@ -46,6 +45,7 @@ export default function Login() {
       setLoading(false);
     }
   };
+  
 
   return (
     <View style={styles.container}>
