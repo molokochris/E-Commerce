@@ -78,8 +78,6 @@ const styles = StyleSheet.create({
     height: 50,
   },
   bckbtn: {
-    fontWeight: "bold",
-    fontSize: 30,
     alignItems: "center",
     paddingLeft: 15,
     width: 60,
@@ -162,7 +160,7 @@ const styles = StyleSheet.create({
   itmsubtract: {
     backgroundColor: "black",
     width: 30,
-    height: 5,
+    height: 10,
     bottom: 100,
     left: 290,
   },
@@ -178,7 +176,7 @@ const styles = StyleSheet.create({
     backgroundColor: "#219653",
     width: 75,
     height: 30,
-    bottom: 49,
+    bottom: 55,
     left: 254,
     borderRadius: 10,
   },
