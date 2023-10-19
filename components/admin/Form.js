@@ -4,15 +4,18 @@ import {
   Text,
   TextInput,
   TouchableOpacity,
-  Picker,
   StyleSheet,
   Image,
+  SafeAreaView,
 } from "react-native";
+import {Picker} from '@react-native-picker/picker';
 import Icon from "react-native-vector-icons/Ionicons";
-import * as ImagePicker from "expo-image-picker";
+import * as ImagePicker from 'expo-image-picker';
 import firebase from "firebase/compat/app";
 import "firebase/compat/firestore";
 import "firebase/compat/storage";
+
+
 
 const firebaseConfig = {
   apiKey: "AIzaSyCXQpFF1n301P_jpAk8Gxh2hYr1VdDy-Xg",
@@ -37,20 +40,21 @@ const FormPage = ({ navigation }) => {
   const [weight, setWeight] = useState("");
   const [price, setPrice] = useState("");
   const [selectedCategory, setSelectedCategory] = useState(categories[0]);
-  const [image, setImage] = useState(null);
+
   const [showSidebar, setShowSidebar] = useState(false);
 
   const handleFormSubmit = async () => {
     try {
-      const imageUrl = await uploadImage();
+      
+      
       await db.collection("products").add({
         productName,
         weight,
         price,
         category: selectedCategory,
-        image: imageUrl,
+        image: image.uri,
       });
-
+      uploadImage();
       setProductName("");
       setWeight("");
       setPrice("");
@@ -63,46 +67,42 @@ const FormPage = ({ navigation }) => {
     }
   };
 
+  const [image, setImage] = useState(null)
+  const [uploading, setUploading] = useState(false) 
+
+
   const pickImage = async () => {
-    const result = await ImagePicker.launchImageLibraryAsync({
-      mediaTypes: ImagePicker.MediaTypeOptions.Images,
-      allowsEditing: true,
-      aspect: [4, 3],
-      quality: 1,
+    let result = await ImagePicker.launchImageLibraryAsync({
+        mediaTypes: ImagePicker.MediaTypeOptions.All,
+        allowsEditing: true,
+        aspect: [4,3],
+        quality: 1
     });
+    const source = {uri: result.assets[0].uri}
+    console.log(source)
+    setImage(source)
+};
 
-    if (!result.cancelled) {
-      setImage(result.uri);
-    }
-  };
+const uploadImage = async () => {
+  setUploading(true)
+  const response = await fetch(image.uri)
+  const blob = response.blob()
+  const filename = image.uri.substring(image.uri.lastIndexOf('/')+1)
+  var ref = firebase.storage().ref().child(filename).put(blob)
+  try {
+      await ref;
+  } catch (e){
+      console.log(e)
+  }
+  setUploading(false)
+  Alert.alert(
+      'Photo uploaded!'
+  );
+  setImage(null);
+} 
 
-  const uploadImage = async () => {
-    try {
-      const response = await fetch(image);
-      const blob = await response.blob();
-      const filename = `images/${new Date().getTime()}`;
-      const ref = storage.ref().child(filename);
-  
-    
-      let contentType = 'image/jpeg';
-      const fileExtension = filename.split('.').pop().toLowerCase();
-      if (fileExtension === 'png') {
-        contentType = 'image/png';
-      }
-  
-      const metadata = {
-        contentType,
-      };
-  
-      await ref.put(blob, metadata);
-      const downloadURL = await ref.getDownloadURL();
-      return downloadURL;
-    } catch (error) {
-      console.error("Error uploading image:", error);
-    
-      return null; 
-    }
-  };
+
+
   
 
   const toggleSidebar = () => {
@@ -118,7 +118,8 @@ const FormPage = ({ navigation }) => {
   };
 
   return (
-    <View style={styles.container}>
+    <SafeAreaView style={styles.container}>
+    <View>
       <View style={styles.header}>
         <Text style={styles.headerText}>Hello Admin</Text>
         <TouchableOpacity style={styles.menuIcon} onPress={toggleSidebar}>
@@ -135,11 +136,16 @@ const FormPage = ({ navigation }) => {
           </TouchableOpacity>
         </View>
       )}
-      <Text style={styles.label}>Upload Picture:</Text>
-      <TouchableOpacity onPress={pickImage} style={styles.uploadButton}>
-        <Text style={styles.uploadButtonText}>Pick an image</Text>
-      </TouchableOpacity>
-      {image && <Image source={{ uri: image }} style={styles.imagePreview} />}
+      
+      <TouchableOpacity style={styles.selectButton} onPress={pickImage}>
+      <Text style={styles.btnText}>Pick an Image</Text> 
+    </TouchableOpacity> 
+    <View style={styles.imageContainer}>
+     {image && <Image source={{uri: image.uri}} style={{width: 300, height: 300}}/>} 
+    <TouchableOpacity style={styles.uploadButton} onPress={uploadImage}>
+        <Text style={styles.btnText}>Upload Image</Text> 
+    </TouchableOpacity> 
+    </View>
       <Text style={styles.label}>Product Name:</Text>
       <TextInput
         value={productName}
@@ -175,6 +181,7 @@ const FormPage = ({ navigation }) => {
         <Text style={styles.buttonText}>Submit</Text>
       </TouchableOpacity>
     </View>
+    </SafeAreaView>
   );
 };
 

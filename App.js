@@ -10,6 +10,7 @@ import Checkout from "./screens/Checkout";
 import Welcome from "./screens/Welcome";
 import FormPage from "./components/admin/Form";
 import ProductsPage from "./components/admin/Products";
+import TestForm from "./components/admin/TestForm";
 const Stack = createStackNavigator();
 
 const App = () => {
@@ -50,17 +51,22 @@ const App = () => {
           component={Checkout}
           options={{ headerShown: false }}
         />
-<Stack.Screen
+        <Stack.Screen
           name="Form"
           component={FormPage}
           options={{ headerShown: false }}
         />
-<Stack.Screen
+        <Stack.Screen
+          name="TestForm"
+          component={TestForm}
+          options={{ headerShown: false }}
+        />
+
+        <Stack.Screen
           name="Products"
           component={ProductsPage}
           options={{ headerShown: false }}
         />
-
       </Stack.Navigator>
     </NavigationContainer>
   );
