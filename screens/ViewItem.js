@@ -10,7 +10,7 @@ import {
 } from "react-native";
 import redPeppers from "../assets/peppers.jpg";
 import back from "../assets/back.png";
-import heart from "../assets/heart.png";
+// import heart from "../assets/heart.png";
 import inventory from "../assets/inventory.png";
 import rating from "../assets/rating.png";
 import { useState } from "react";
@@ -20,14 +20,32 @@ import { tomato } from "color-name";
 
 export default function ViewItem({ navigation, route }) {
   const [qty, setQty] = useState(1);
-  const [size, setSize] = useState(15);
+  const [wish, setWish] = useState(false);
   const { item } = route.params;
+  const [cartItems, setCartItems] = useState([]);
   // console.log(item.productName);
   const increment = () => {
     setQty(qty + 1);
   };
   const decrement = () => {
     setQty(qty - 1);
+  };
+
+  const addToCart = (item) => {
+    const isAvailItem = cartItems.find((i) => i.id === item.id);
+    if (isAvailItem) {
+      setCartItems(
+        cartItems.map((i) => {
+          if (i.id === item.id) {
+            return { ...i, qty: i.qty + 1 };
+          }
+          return i;
+        })
+      );
+    } else {
+      setCartItems([...cartItems, { ...item, qty: 1 }]);
+    }
+    navigation.navigate("Cart", { cartItems: cartItems });
   };
 
   return (
@@ -51,15 +69,10 @@ export default function ViewItem({ navigation, route }) {
         </View>
         <View style={{ alignSelf: "center" }}>
           <Text style={{ fontWeight: 500, fontSize: 18, color: "#219653" }}>
-            {/* R 4,99 / Kg */}
             {item.weight}
           </Text>
         </View>
         <View style={{ flexDirection: "column" }}>
-          {/* <FlatList
-            data={images}
-            renderItem={({ item }) => <OnboardingItem item={item} />}
-          /> */}
           <Image
             source={{ uri: item.imageURL }}
             style={{
@@ -148,19 +161,39 @@ export default function ViewItem({ navigation, route }) {
           </View>
         </View>
       </ScrollView>
-      <View style={{ flexDirection: "row", paddingBottom: 10, paddingTop: 5 }}>
-        {/* <Image source={heart} style={{ width: 100, height: 200 }} /> */}
-        <Image
-          source={heart}
+
+      <View
+        style={{
+          flexDirection: "row",
+          paddingBottom: 10,
+          paddingTop: 5,
+        }}
+      >
+        <View
           style={{
-            resizeMode: "center",
+            alignItems: "center",
+            justifyContent: "center",
             height: 60,
             width: "20%",
-            backgroundColor: "#F2F3F4",
-            marginRight: "5%",
             borderRadius: 8,
+            backgroundColor: "whitesmoke",
+            marginRight: "5%",
           }}
-        />
+        >
+          <TouchableOpacity onPress={() => setWish(!wish)}>
+            <Image
+              source={
+                wish
+                  ? require("../assets/heart2.png")
+                  : require("../assets/heart.png")
+              }
+              style={{
+                width: 60,
+                resizeMode: "center",
+              }}
+            />
+          </TouchableOpacity>
+        </View>
         <TouchableOpacity
           style={{
             width: "75%",
@@ -169,7 +202,7 @@ export default function ViewItem({ navigation, route }) {
             paddingVertical: 20,
             borderRadius: 8,
           }}
-          onPress={() => navigation.navigate("Checkout")}
+          onPress={addToCart}
         >
           <Text style={{ color: "whitesmoke", fontWeight: "bold" }}>
             Add to cart

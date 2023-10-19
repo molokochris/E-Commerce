@@ -41,24 +41,9 @@ const Home = () => {
   const navigation = useNavigation();
 
   //Add Items to Cart
-  const [cartItems, setCartItems] = useState([]);
-  console.log(cartItems);
+  // console.log(cartItems);
 
-  const addToCart = (item) => {
-    const isAvailItem = cartItems.find((i) => i.id === item.id);
-    if (isAvailItem) {
-      setCartItems(
-        cartItems.map((i) => {
-          if (i.id === item.id) {
-            return { ...i, qty: i.qty + 1 };
-          }
-          return i;
-        })
-      );
-    } else {
-      setCartItems([...cartItems, { ...item, qty: 1 }]);
-    }
-  };
+  
 
   // console.log(cartItems);
   const fetchProducts = async () => {
@@ -99,7 +84,7 @@ const Home = () => {
       <Text style={styles.itemPrice}>{item.price}</Text>
       <TouchableOpacity
         style={styles.addIconContainer}
-        onPress={() => addToCart(item)}
+        // onPress={() => addToCart(item)}
       >
         <Icon name="add-circle" size={30} color="green" />
       </TouchableOpacity>
