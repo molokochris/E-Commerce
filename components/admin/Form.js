@@ -1,16 +1,10 @@
-import React, { useState } from "react";
-import {
-  View,
-  Text,
-  TextInput,
-  TouchableOpacity,
-  Picker,
-  StyleSheet,
-  Image,
-} from "react-native";
+import React, { useState } from 'react';
+import { View, Text, TextInput, TouchableOpacity, StyleSheet } from 'react-native';
 import Icon from "react-native-vector-icons/Ionicons";
+import firebase from 'firebase/compat/app';
+import { Picker } from '@react-native-picker/picker';
+import 'firebase/firestore';
 import * as ImagePicker from "expo-image-picker";
-import firebase from "firebase/compat/app";
 import "firebase/compat/firestore";
 import "firebase/compat/storage";
 
