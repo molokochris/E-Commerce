@@ -30,7 +30,7 @@ if (!firebase.apps.length) {
 }
 
 const db = firebase.firestore();
-const storage = firebase.storage(); 
+const storage = firebase.storage();
 
 const Home = () => {
   const [topData, setTopData] = useState([]);
@@ -44,18 +44,17 @@ const Home = () => {
 
       for (const doc of productsSnapshot.docs) {
         const productData = doc.data();
-        const imageRef = storage.refFromURL(productData.image); 
+        const imageRef = storage.refFromURL(productData.image);
         const imageUrl = await imageRef.getDownloadURL();
         data.push({
           id: doc.id,
           ...productData,
           imageURL: imageUrl,
-          category: productData.category, 
+          category: productData.category,
         });
       }
 
       setTopData(data);
-      
     } catch (error) {
       console.error("Error fetching data:", error);
     }
@@ -82,8 +81,7 @@ const Home = () => {
   };
 
   const filteredTopData = topData.filter(
-    (item) =>
-      selectedCategory === "All" || item.category === selectedCategory
+    (item) => selectedCategory === "All" || item.category === selectedCategory
   );
 
   return (
@@ -141,7 +139,7 @@ const Home = () => {
               <Text
                 style={[
                   styles.categoryButtonText,
-                  selectedCategory === "All" && { fontWeight: "bold"},
+                  selectedCategory === "All" && { fontWeight: "bold" },
                 ]}
               >
                 All
@@ -227,7 +225,6 @@ const Home = () => {
             numColumns={2}
             contentContainerStyle={styles.itemsContainer}
           />
-       
         </ScrollView>
         <View
           style={{
@@ -244,7 +241,7 @@ const Home = () => {
             <Icon style={{ color: "lightgrey" }} name="search" size={30} />
           </TouchableOpacity>
           <TouchableOpacity>
-            <Icon style={{ color: "lightgrey" }} name="" size={30} />
+            <Icon style={{ color: "lightgrey" }} name="cart" size={30} />
           </TouchableOpacity>
           <TouchableOpacity>
             <Icon style={{ color: "lightgrey" }} name="person" size={30} />
