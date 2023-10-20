@@ -7,16 +7,29 @@ import {
   View,
   StyleSheet,
 } from "react-native";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import { useEffect } from "react";
 
 export default function Cart({ navigation, route }) {
   const { item } = route.params;
-  console.log(item);
+
+  useEffect(() => {
+    const getData = async () => {
+      try {
+        const value = await AsyncStorage.getItem("cartData");
+        console.log("Storeed Data:", value);
+      } catch (e) {
+        console.log(e);
+      }
+    };
+    getData();
+  }, []);
   return (
     <View style={styles.container}>
       <View style={styles.navbar}>
         <TouchableOpacity
           style={styles.Btn}
-          // onPress={() => navigation.navigate("ViewItem", { item: item })}
+          onPress={() => navigation.navigate("ViewItem", { item: item })}
         >
           <Image style={styles.bckbtn} source={require("../assets/back.png")} />
         </TouchableOpacity>
@@ -25,31 +38,40 @@ export default function Cart({ navigation, route }) {
 
       <ScrollView style={styles.container2}>
         <View style={styles.itemcont}>
-          <Image
-            style={styles.itemPic}
-            source={require("../assets/brocoli.jpeg")}
-          />
+          <Image style={styles.itemPic} source={{ uri: item.imageUrl }} />
 
-          <Text style={styles.itemName}>Brocoli</Text>
+          <Text style={styles.itemName}>{item.productName}</Text>
 
           <Text style={styles.itemTotal}>
-            Total of <Text style={styles.itemPrice}>$240</Text> by weight
+            Total of{" "}
+            <Text style={styles.itemPrice}>${item.price * item.qty}</Text> by
+            weight
           </Text>
           <Text style={styles.itempp}>
-            <Text style={styles.itemPrice}>$20</Text>/kg
+            <Text style={styles.itemPrice}>${item.price}</Text>/kg
           </Text>
 
           <Text style={styles.itemQty}>
             Qty:
-            <Text style={styles.itemPrice}> 20</Text>
+            <Text style={styles.itemPrice}>{item.qty}</Text>
           </Text>
         </View>
-        <TouchableOpacity style={styles.itmsubtract}></TouchableOpacity>
-        <TouchableOpacity style={styles.itmchange}>
+        <TouchableOpacity
+          onPress={() => (item.qty -= 1)}
+          disabled={item.qty < 1 ? true : false}
+          style={styles.itmsubtract}
+        ></TouchableOpacity>
+        <TouchableOpacity
+          style={styles.itmchange}
+          onPress={() => navigation.navigate("ViewItem", { item: item })}
+        >
           <Text style={styles.txtitm}>change</Text>
         </TouchableOpacity>
       </ScrollView>
-      <TouchableOpacity style={styles.Btn2}>
+      <TouchableOpacity
+        style={styles.Btn2}
+        onPress={() => navigation.navigate("Checkout", { status: "success" })}
+      >
         <Text style={styles.Btn2w}>Checkout</Text>
       </TouchableOpacity>
     </View>
@@ -131,6 +153,7 @@ const styles = StyleSheet.create({
     top: 10,
     height: 60,
     left: 10,
+    resizeMode: "center",
   },
 
   itemName: {

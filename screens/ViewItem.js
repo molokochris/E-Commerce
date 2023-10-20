@@ -16,36 +16,59 @@ import rating from "../assets/rating.png";
 import { useState } from "react";
 import { FlatList } from "react-native";
 import { tomato } from "color-name";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 // import OnboardingItem from "./components/OnboardingItem";
 
 export default function ViewItem({ navigation, route }) {
   const [qty, setQty] = useState(1);
   const [wish, setWish] = useState(false);
   const { item } = route.params;
-  const [cartItems, setCartItems] = useState([]);
-  // console.log(item.productName);
+  const [isAdded, setIsAdded] = useState(false);
+  console.log(item);
   const increment = () => {
     setQty(qty + 1);
   };
   const decrement = () => {
     setQty(qty - 1);
   };
+  async function saveCartData(item) {
+    try {
+      const cartData = item;
+      await AsyncStorage.setItem("cartData", JSON.stringify(cartData));
+      alert("item added to cart successfully");
+      setIsAdded(true);
+    } catch (error) {
+      console.log(error);
+    }
+  }
+
+  // async function saveCartData(item) {
+  //   try {
+  //     // Retrieve existing cart data from AsyncStorage and parse it
+  //     const cartData = await AsyncStorage.getItem("cartData");
+  //     let cartArray = [];
+
+  //     if (cartData) {
+  //       cartArray = JSON.parse(cartData);
+  //     }
+
+  //     // Add the new item to the cart
+  //     cartArray.push(item);
+
+  //     await AsyncStorage.setItem("cartData", JSON.stringify(cartArray));
+  //     alert("Item added to the cart successfully");
+  //     setIsAdded(true);
+  //   } catch (error) {
+  //     console.log(error);
+  //   }
+  // }
 
   const addToCart = (item) => {
-    const isAvailItem = cartItems.find((i) => i.id === item.id);
-    if (isAvailItem) {
-      setCartItems(
-        cartItems.map((i) => {
-          if (i.id === item.id) {
-            return { ...i, qty: i.qty + 1 };
-          }
-          return i;
-        })
-      );
-    } else {
-      setCartItems([...cartItems, { ...item, qty: 1 }]);
-    }
-    navigation.navigate("Cart", { cartItems: cartItems });
+    item.qty = qty;
+    saveCartData(item);
+
+    // navigation.navigate("Cart", { item: item });
+    console.log(item);
   };
 
   return (
@@ -74,7 +97,7 @@ export default function ViewItem({ navigation, route }) {
         </View>
         <View style={{ flexDirection: "column" }}>
           <Image
-            source={{ uri: item.imageURL }}
+            source={{ uri: item.imageUrl }}
             style={{
               resizeMode: "center",
               width: "90%",
@@ -202,10 +225,14 @@ export default function ViewItem({ navigation, route }) {
             paddingVertical: 20,
             borderRadius: 8,
           }}
-          onPress={addToCart}
+          onPress={() => {
+            isAdded
+              ? navigation.navigate("Cart", { item: item })
+              : addToCart(item);
+          }}
         >
           <Text style={{ color: "whitesmoke", fontWeight: "bold" }}>
-            Add to cart
+            {isAdded ? "Go to cart" : "Add to cart"}
           </Text>
         </TouchableOpacity>
       </View>

@@ -1,92 +1,38 @@
-import {
-  Text,
-  View,
-  StyleSheet,
-  Image,
-  Form,
-  TextInput,
-  TouchableOpacity,
-} from "react-native";
-import React, { useState } from "react";
+import React from "react";
+import { View, Text, Image, StyleSheet, TouchableOpacity } from "react-native";
 
-export default function Checkout() {
-  const [date, setDate] = React.useState("");
-  const [name, setName] = React.useState("");
-  const [cardnumber, setCardnumber] = React.useState("");
-  const [cvv, setCvv] = React.useState("");
-  const [exp, setExp] = React.useState("");
-  const [zip, setZip] = React.useState("");
+export default function Checkout({ navigation, route }) {
+  const { status } = route.params;
+
+  // Example URLs for online images
+  const successImageUrl =
+    "https://via.placeholder.com/150/00FF00/000000?text=Success"; // Placeholder for success image
+  const failureImageUrl =
+    "https://via.placeholder.com/150/FF0000/000000?text=Failure"; // Placeholder for failure image
 
   return (
     <View style={styles.container}>
-      <View style={styles.card}>
-        <Text style={styles.cardNo}>1111 1111 1111 1111</Text>
-        <Text style={styles.cardHo}>nigga NY</Text>
-        <Text style={styles.cardExp}> Exp:10 36</Text>
-        <Text style={styles.cardCvv}>CVV: 123</Text>
-        <Image
-          style={styles.cardlogo}
-          source={require("../assets/cardlog.png")}
-        />
-      </View>
-      <View style={styles.detailsz}>
-        <Text style={styles.orderH}>order summary</Text>
-        <Text style={styles.orderP}>$48.59</Text>
-        <Text style={styles.orderNQ}>1xTop notch sweater</Text>
-        <Text style={styles.orderTx}>Tax</Text>
-        <Text style={styles.shipping}>Shipping</Text>
-        <Text style={styles.creditCrd}>Credit card</Text>
+      {status === "success" ? (
+        <View style={styles.successContainer}>
+          <Image source={{ uri: successImageUrl }} style={styles.image} />
+          <Text style={styles.statusText}>Order Successful!</Text>
+          <Text style={styles.statusMessage}>Thank you for your order.</Text>
+        </View>
+      ) : (
+        <View style={styles.failureContainer}>
+          <Image source={{ uri: failureImageUrl }} style={styles.image} />
+          <Text style={styles.statusText}>Order Failed</Text>
+          <Text style={styles.statusMessage}>
+            Oops! Something went wrong with your order.
+          </Text>
+        </View>
+      )}
 
-        <Text style={styles.orderNQP}>$12</Text>
-        <Text style={styles.orderTxP}>$1.2</Text>
-        <Text style={styles.shippingP}>$7</Text>
-
-        <TextInput
-          style={styles.input}
-          maxLength={40}
-          onChangeText={setName}
-          value={name}
-        />
-        <Text style={styles.inpName}>Name on card</Text>
-        <TextInput
-          style={styles.input2}
-          maxLength={40}
-          onChangeText={setCardnumber}
-          value={cardnumber}
-          keyboardType="numeric"
-        />
-        <Text style={styles.inpNo}>Card Number</Text>
-        <TextInput
-          style={styles.input3}
-          maxLength={40}
-          onChangeText={setCardnumber}
-          value={exp}
-          keyboardType="numeric"
-        />
-        <Text style={styles.inpNo}>Exp</Text>
-        <TextInput
-          style={styles.input4}
-          maxLength={40}
-          onChangeText={setCardnumber}
-          value={exp}
-          keyboardType="numeric"
-        />
-        <Text style={styles.inpCvv}>CVV</Text>
-
-        <Text style={styles.inpZip}>ZIP</Text>
-        <TextInput
-          style={styles.input5}
-          maxLength={40}
-          onChangeText={setCardnumber}
-          value={zip}
-          keyboardType="numeric"
-        />
-      </View>
-      <TouchableOpacity style={styles.button}>
-        <Text style={styles.buttonTxt}>Proceed to confirmation</Text>
-      </TouchableOpacity>
-      <TouchableOpacity style={styles.buttonBCK}>
-        <Text style={styles.buttonBck}>⇦</Text>
+      <TouchableOpacity
+        style={styles.button}
+        onPress={() => navigation.navigate("Home")}
+      >
+        <Text style={styles.buttonText}>Back to Home</Text>
       </TouchableOpacity>
     </View>
   );
@@ -94,217 +40,40 @@ export default function Checkout() {
 
 const styles = StyleSheet.create({
   container: {
+    flex: 1,
     alignItems: "center",
     justifyContent: "center",
-    padding: 24,
-    height: 450,
-    width: 340,
-    backgroundColor: "white",
-    left: 20,
-    borderRadius: 10,
-    bottom: -60,
   },
-
-  card: {
-    backgroundColor: "#000000",
-    width: 240,
-    borderRadius: 20,
-    height: 135,
-    top: 20,
-    shadowRadius: 15,
-    shadowOpacity: 80,
-    shadowColor: "black",
-    elevation: 5,
-    shadowOffset: { width: 10, height: 10 },
+  successContainer: {
+    alignItems: "center",
   },
-  cardNo: {
-    color: "#ffffff",
-    fontSize: 18,
-    left: 20,
-    bottom: -55,
-    // fontWeight: 800,
+  failureContainer: {
+    alignItems: "center",
   },
-  cardHo: {
-    color: "#ffffff",
-    fontSize: 14,
-    left: 20,
-    bottom: -65,
-    // fontWeight: 700,
+  image: {
+    width: 150,
+    height: 150,
+    marginBottom: 20,
   },
-  cardExp: {
-    color: "#ffffff",
-    fontSize: 14,
-    left: 17,
-    bottom: -70,
-    fontWeight: 700,
+  statusText: {
+    fontSize: 24,
+    fontWeight: "bold",
   },
-  cardCvv: {
-    color: "#ffffff",
-    fontSize: 14,
-    left: 170,
-    bottom: -50,
-    fontWeight: 700,
-  },
-
-  cardlogo: {
-    height: 30,
-    width: 50,
-    left: 180,
-    bottom: 55,
-  },
-  orderH: {
-    fontWeight: 900,
-    fontSize: 30,
-    left: 30,
-  },
-  orderP: {
-    fontWeight: 500,
-    fontSize: 30,
-    left: 30,
-  },
-  orderNQ: {
-    fontWeight: 500,
-    fontSize: 20,
-    left: 30,
-  },
-  orderTx: {
-    fontWeight: 500,
-    fontSize: 20,
-    left: 30,
-  },
-  shipping: {
-    fontWeight: 500,
-    fontSize: 20,
-    left: 30,
-  },
-  detailsz: {
-    top: 30,
-    right: 0,
-    width: 300,
-    backgroundColor: "white",
-    height: 378,
-  },
-  creditCrd: {
-    fontWeight: 900,
-    fontSize: 30,
-    left: 30,
-    bottom: -10,
-  },
-  input: {
-    height: 40,
-    fontSize: 28,
-    borderBottomWidth: 4,
-    fontWeight: 600,
-    left: 30,
-    width: 230,
-    bottom: 60,
-  },
-  input2: {
-    height: 40,
-    fontSize: 28,
-    borderBottomWidth: 4,
-    fontWeight: 600,
-    left: 30,
-    width: 230,
-    bottom: 60,
-  },
-  inpName: {
-    fontWeight: 500,
-    fontSize: 18,
-    left: 30,
-    bottom: 60,
-  },
-  inpNo: {
-    fontWeight: 700,
-    fontSize: 18,
-    left: 30,
-    bottom: 60,
-  },
-  input3: {
-    height: 40,
-    fontSize: 28,
-    borderBottomWidth: 4,
-    fontWeight: 600,
-    left: 30,
-    width: 60,
-    bottom: 60,
-  },
-  input4: {
-    height: 40,
-    fontSize: 28,
-    borderBottomWidth: 4,
-    fontWeight: 800,
-    left: 115,
-    width: 60,
-    bottom: 123,
-  },
-  inpCvv: {
-    fontWeight: 700,
-    fontSize: 18,
-    left: 115,
-    bottom: 122,
-  },
-  input5: {
-    height: 40,
-    fontSize: 28,
-    borderBottomWidth: 4,
-    fontWeight: 800,
-    left: 200,
-    width: 60,
-    bottom: 207,
-  },
-  inpZip: {
-    fontWeight: 700,
-    fontSize: 18,
-    left: 200,
-    bottom: 142,
+  statusMessage: {
+    fontSize: 16,
+    color: "gray",
+    textAlign: "center",
+    marginVertical: 10,
   },
   button: {
-    bottom: -70,
-    alignItems: "center",
     backgroundColor: "#4169e1",
-    paddingTop: 20,
-    height: 70,
-
+    padding: 10,
     borderRadius: 10,
-    width: 340,
+    marginTop: 20,
   },
-  buttonTxt: {
-    fontWeight: 600,
-    fontSize: 25,
+  buttonText: {
     color: "white",
-  },
-  orderNQP: {
-    fontWeight: 500,
-    fontSize: 20,
-    left: 240,
-    bottom: 108,
-  },
-  orderTxP: {
-    fontWeight: 500,
-    fontSize: 20,
-    left: 240,
-    bottom: 108,
-  },
-  shippingP: {
-    fontWeight: 500,
-    fontSize: 20,
-    left: 240,
-    bottom: 108,
-  },
-  buttonBck: {
-    fontWeight: 600,
-    fontSize: 25,
-    color: "black",
-  },
-  buttonBCK: {
-    bottom: 690,
-    alignItems: "center",
-    backgroundColor: "#ffdab9",
-    paddingTop: 20,
-    height: 70,
-    borderRadius: 10,
-    width: 70,
-    right: 140,
+    fontSize: 18,
+    fontWeight: "bold",
   },
 });

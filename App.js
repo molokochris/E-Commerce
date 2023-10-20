@@ -64,7 +64,7 @@ const App = () => {
           options={{ headerShown: false }}
         />
 
-<Stack.Screen
+        <Stack.Screen
           name="Cart"
           component={Cart}
           options={{ headerShown: false }}
@@ -75,6 +75,28 @@ const App = () => {
           options={{ headerShown: false }}
         />
       </Stack.Navigator>
+
+      {/* <View
+        style={{
+          flexDirection: "row",
+          justifyContent: "space-around",
+          padding: 16,
+          backgroundColor: "white",
+        }}
+      >
+        <TouchableOpacity>
+          <Icon style={{ color: "green" }} name="home" size={30} />
+        </TouchableOpacity>
+        <TouchableOpacity>
+          <Icon style={{ color: "lightgrey" }} name="search" size={30} />
+        </TouchableOpacity>
+        <TouchableOpacity>
+          <Icon style={{ color: "lightgrey" }} name="cart" size={30} />
+        </TouchableOpacity>
+        <TouchableOpacity>
+          <Icon style={{ color: "lightgrey" }} name="person" size={30} />
+        </TouchableOpacity>
+      </View> */}
     </NavigationContainer>
   );
 };
