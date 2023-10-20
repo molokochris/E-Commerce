@@ -8,16 +8,21 @@ import {
   StyleSheet,
 } from "react-native";
 
-export default function App() {
+export default function Cart({ navigation, route }) {
+  const { item } = route.params;
+  console.log(item);
   return (
     <View style={styles.container}>
-    <View style={styles.navbar}>
-    <TouchableOpacity style={styles.Btn}>
-        <Image style={styles.bckbtn} source={require("../assets/back.png")} />
-      </TouchableOpacity>
-      <Text style={styles.paragraph}>Cart</Text>
+      <View style={styles.navbar}>
+        <TouchableOpacity
+          style={styles.Btn}
+          // onPress={() => navigation.navigate("ViewItem", { item: item })}
+        >
+          <Image style={styles.bckbtn} source={require("../assets/back.png")} />
+        </TouchableOpacity>
+        <Text style={styles.paragraph}>Cart</Text>
       </View>
-      
+
       <ScrollView style={styles.container2}>
         <View style={styles.itemcont}>
           <Image
@@ -57,7 +62,7 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     backgroundColor: "white",
     padding: 8,
-    alignItems:"center",
+    alignItems: "center",
   },
   paragraph: {
     fontSize: 30,
@@ -108,12 +113,10 @@ const styles = StyleSheet.create({
     height: 590,
     backgroundColor: "white",
     bottom: 20,
-    
-    
   },
 
   itemcont: {
-    alignSelf: 'center',
+    alignSelf: "center",
     width: 330,
     height: 100,
     backgroundColor: "white",
@@ -141,7 +144,7 @@ const styles = StyleSheet.create({
     fontSize: 15,
     bottom: 75,
     left: 90,
-    fontWeight:"500",
+    fontWeight: "500",
   },
   itemPrice: {
     fontWeight: "900",
@@ -149,13 +152,13 @@ const styles = StyleSheet.create({
   itempp: {
     bottom: 40,
     left: 20,
-    fontWeight:"500",
+    fontWeight: "500",
   },
   itemTotal: {
     fontSize: 15,
     bottom: 55,
     left: 85,
-    fontWeight:"500",
+    fontWeight: "500",
   },
   itmsubtract: {
     backgroundColor: "black",
@@ -187,7 +190,6 @@ const styles = StyleSheet.create({
     fontSize: 17,
   },
   navbar: {
-    width:"100%",
-    
+    width: "100%",
   },
 });
