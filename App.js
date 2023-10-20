@@ -10,7 +10,7 @@ import Checkout from "./screens/Checkout";
 import Welcome from "./screens/Welcome";
 import FormPage from "./components/admin/Form";
 import ProductsPage from "./components/admin/Products";
-import TestForm from "./components/admin/TestForm";
+// import TestForm from "./components/admin/TestForm";
 
 import Cart from "./screens/Cart";
 const Stack = createStackNavigator();
@@ -75,28 +75,6 @@ const App = () => {
           options={{ headerShown: false }}
         />
       </Stack.Navigator>
-
-      {/* <View
-        style={{
-          flexDirection: "row",
-          justifyContent: "space-around",
-          padding: 16,
-          backgroundColor: "white",
-        }}
-      >
-        <TouchableOpacity>
-          <Icon style={{ color: "green" }} name="home" size={30} />
-        </TouchableOpacity>
-        <TouchableOpacity>
-          <Icon style={{ color: "lightgrey" }} name="search" size={30} />
-        </TouchableOpacity>
-        <TouchableOpacity>
-          <Icon style={{ color: "lightgrey" }} name="cart" size={30} />
-        </TouchableOpacity>
-        <TouchableOpacity>
-          <Icon style={{ color: "lightgrey" }} name="person" size={30} />
-        </TouchableOpacity>
-      </View> */}
     </NavigationContainer>
   );
 };
