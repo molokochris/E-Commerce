@@ -58,11 +58,6 @@ const App = () => {
           component={FormPage}
           options={{ headerShown: false }}
         />
-        <Stack.Screen
-          name="TestForm"
-          component={TestForm}
-          options={{ headerShown: false }}
-        />
 
         <Stack.Screen
           name="Cart"
