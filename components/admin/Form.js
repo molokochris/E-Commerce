@@ -1,117 +1,106 @@
 import React, { useState } from "react";
 import {
   View,
-  Text,
   TextInput,
-  TouchableOpacity,
-  StyleSheet,
+  Text,
   Image,
+  Alert,
   SafeAreaView,
+  StyleSheet,
+  TouchableOpacity,
+  Button,
 } from "react-native";
-import {Picker} from '@react-native-picker/picker';
+import { Picker } from "@react-native-picker/picker";
 import Icon from "react-native-vector-icons/Ionicons";
-import * as ImagePicker from 'expo-image-picker';
-import firebase from "firebase/compat/app";
-import React, { useState } from 'react';
-import { View, Text, TextInput, TouchableOpacity, StyleSheet } from 'react-native';
-import Icon from "react-native-vector-icons/Ionicons";
-import firebase from 'firebase/compat/app';
-import { Picker } from '@react-native-picker/picker';
-import 'firebase/firestore';
 import * as ImagePicker from "expo-image-picker";
-
+import firebase from "firebase/compat/app";
 import "firebase/compat/firestore";
 import "firebase/compat/storage";
 
-
-
-const firebaseConfig = {
-  apiKey: "AIzaSyCXQpFF1n301P_jpAk8Gxh2hYr1VdDy-Xg",
-  authDomain: "e-commerce-284f2.firebaseapp.com",
-  projectId: "e-commerce-284f2",
-  storageBucket: "e-commerce-284f2.appspot.com",
-  messagingSenderId: "652686747106",
-  appId: "1:652686747106:web:dbc2cb357c6722f5af85bb",
-};
-
-if (!firebase.apps.length) {
-  firebase.initializeApp(firebaseConfig);
-}
-
-const db = firebase.firestore();
-const storage = firebase.storage();
-
 const categories = ["vegetables", "fruits", "meat", "fish"];
-
-const FormPage = ({ navigation }) => {
+const Form = ({ navigation }) => {
   const [productName, setProductName] = useState("");
+  const [image, setImage] = useState(null);
   const [weight, setWeight] = useState("");
   const [price, setPrice] = useState("");
   const [selectedCategory, setSelectedCategory] = useState(categories[0]);
 
   const [showSidebar, setShowSidebar] = useState(false);
 
-  const handleFormSubmit = async () => {
-    try {
-      
-      
-      await db.collection("products").add({
-        productName,
-        weight,
-        price,
-        category: selectedCategory,
-        image: image.uri,
-      });
-      uploadImage();
-      setProductName("");
-      setWeight("");
-      setPrice("");
-      setSelectedCategory(categories[0]);
-      setImage(null);
+  const handleChooseImage = async () => {
+    const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
+    if (status !== "granted") {
+      Alert.alert("Permission denied");
+      return;
+    }
 
-      alert("Product created successfully!");
-    } catch (error) {
-      console.log("Error creating product:", error);
+    const result = await ImagePicker.launchImageLibraryAsync({
+      mediaTypes: ImagePicker.MediaTypeOptions.Images,
+      allowsEditing: true,
+      quality: 1,
+    });
+
+    if (!result.cancelled) {
+      const source = { uri: result.uri };
+      setImage(source);
     }
   };
 
-  const [image, setImage] = useState(null)
-  const [uploading, setUploading] = useState(false) 
+  const handleSubmit = async () => {
+    if (productName && image && weight && price && selectedCategory) {
+      const response = await fetch(image.uri);
+      const blob = await response.blob();
 
+      const storageRef = firebase.storage().ref();
+      const imageRef = storageRef.child(`images/${Date.now()}.jpg`);
 
-  const pickImage = async () => {
-    let result = await ImagePicker.launchImageLibraryAsync({
-        mediaTypes: ImagePicker.MediaTypeOptions.All,
-        allowsEditing: true,
-        aspect: [4,3],
-        quality: 1
-    });
-    const source = {uri: result.assets[0].uri}
-    console.log(source)
-    setImage(source)
-};
-
-const uploadImage = async () => {
-  setUploading(true)
-  const response = await fetch(image.uri)
-  const blob = response.blob()
-  const filename = image.uri.substring(image.uri.lastIndexOf('/')+1)
-  var ref = firebase.storage().ref().child(filename).put(blob)
-  try {
-      await ref;
-  } catch (e){
-      console.log(e)
-  }
-  setUploading(false)
-  Alert.alert(
-      'Photo uploaded!'
-  );
-  setImage(null);
-} 
-
-
-
-  
+      const uploadTask = imageRef.put(blob);
+      uploadTask.on(
+        firebase.storage.TaskEvent.STATE_CHANGED,
+        (snapshot) => {
+          const progress = Math.round(
+            (snapshot.bytesTransferred / snapshot.totalBytes) * 100
+          );
+          console.log(`Upload Progress: ${progress}%`);
+        },
+        (error) => {
+          console.log("Error uploading image: ", error);
+        },
+        () => {
+          uploadTask.snapshot.ref
+            .getDownloadURL()
+            .then((imageUrl) => {
+              firebase
+                .firestore()
+                .collection("products")
+                .add({
+                  productName,
+                  weight,
+                  price,
+                  category: selectedCategory,
+                  imageUrl,
+                })
+                .then(() => {
+                  setProductName("");
+                  setWeight("");
+                  setPrice("");
+                  setSelectedCategory(categories[0]);
+                  setImage(null);
+                  Alert.alert("Form submitted successfully!");
+                })
+                .catch((error) => {
+                  console.log("Error adding document: ", error);
+                });
+            })
+            .catch((error) => {
+              console.log("Error getting download URL: ", error);
+            });
+        }
+      );
+    } else {
+      Alert.alert("Please fill in all fields");
+    }
+  };
 
   const toggleSidebar = () => {
     setShowSidebar(!showSidebar);
@@ -127,68 +116,69 @@ const uploadImage = async () => {
 
   return (
     <SafeAreaView style={styles.container}>
-    <View>
-      <View style={styles.header}>
-        <Text style={styles.headerText}>Hello Admin</Text>
-        <TouchableOpacity style={styles.menuIcon} onPress={toggleSidebar}>
-          <Icon style={{ color: "blue" }} name="menu" size={30} />
-        </TouchableOpacity>
-      </View>
-      {showSidebar && (
-        <View style={styles.sidebar}>
-          <TouchableOpacity style={styles.sidebarItem} onPress={handleProducts}>
-            <Text style={styles.sidebarText}>Products</Text>
-          </TouchableOpacity>
-          <TouchableOpacity style={styles.sidebarItem} onPress={handleLogout}>
-            <Text style={styles.sidebarText}>Logout</Text>
+      <View>
+        <View style={styles.header}>
+          <Text style={styles.headerText}>Hello Admin</Text>
+          <TouchableOpacity style={styles.menuIcon} onPress={toggleSidebar}>
+            <Icon style={{ color: "blue" }} name="menu" size={30} />
           </TouchableOpacity>
         </View>
-      )}
-      
-      <TouchableOpacity style={styles.selectButton} onPress={pickImage}>
-      <Text style={styles.btnText}>Pick an Image</Text> 
-    </TouchableOpacity> 
-    <View style={styles.imageContainer}>
-     {image && <Image source={{uri: image.uri}} style={{width: 300, height: 300}}/>} 
-    <TouchableOpacity style={styles.uploadButton} onPress={uploadImage}>
-        <Text style={styles.btnText}>Upload Image</Text> 
-    </TouchableOpacity> 
-    </View>
-      <Text style={styles.label}>Product Name:</Text>
-      <TextInput
-        value={productName}
-        onChangeText={(text) => setProductName(text)}
-        placeholder="Product Name"
-        style={styles.input}
-      />
-      <Text style={styles.label}>Weight:</Text>
-      <TextInput
-        value={weight}
-        onChangeText={(text) => setWeight(text)}
-        placeholder="Weight"
-        style={styles.input}
-      />
-      <Text style={styles.label}>Price:</Text>
-      <TextInput
-        value={price}
-        onChangeText={(text) => setPrice(text)}
-        placeholder="Price"
-        style={styles.input}
-      />
-      <Text style={styles.label}>Category:</Text>
-      <Picker
-        selectedValue={selectedCategory}
-        onValueChange={(itemValue, itemIndex) => setSelectedCategory(itemValue)}
-        style={styles.picker}
-      >
-        {categories.map((category) => (
-          <Picker.Item key={category} label={category} value={category} />
-        ))}
-      </Picker>
-      <TouchableOpacity onPress={handleFormSubmit} style={styles.button}>
-        <Text style={styles.buttonText}>Submit</Text>
-      </TouchableOpacity>
-    </View>
+
+        {showSidebar && (
+          <View style={styles.sidebar}>
+            <TouchableOpacity
+              style={styles.sidebarItem}
+              onPress={handleProducts}
+            >
+              <Text style={styles.sidebarText}>Products</Text>
+            </TouchableOpacity>
+            <TouchableOpacity style={styles.sidebarItem} onPress={handleLogout}>
+              <Text style={styles.sidebarText}>Logout</Text>
+            </TouchableOpacity>
+          </View>
+        )}
+
+        <Button title="Choose Image" onPress={handleChooseImage} />
+        {image && <Image source={image} style={{ width: 200, height: 200 }} />}
+
+        <Text style={styles.label}>Product Name:</Text>
+        <TextInput
+          value={productName}
+          onChangeText={(value) => setProductName(value)}
+          placeholder="Product Name"
+          style={styles.input}
+        />
+        <Text style={styles.label}>Weight:</Text>
+        <TextInput
+          value={weight}
+          onChangeText={(value) => setWeight(value)}
+          placeholder="Weight"
+          style={styles.input}
+        />
+        <Text style={styles.label}>Price:</Text>
+        <TextInput
+          value={price}
+          onChangeText={(value) => setPrice(value)}
+          placeholder="Price"
+          style={styles.input}
+        />
+        <Text style={styles.label}>Category:</Text>
+        <Picker
+          selectedValue={selectedCategory}
+          onValueChange={(itemValue, itemIndex) =>
+            setSelectedCategory(itemValue)
+          }
+          style={styles.picker}
+        >
+          {categories.map((category) => (
+            <Picker.Item key={category} label={category} value={category} />
+          ))}
+        </Picker>
+
+        <TouchableOpacity onPress={handleSubmit} style={styles.button}>
+          <Text style={styles.buttonText}>Submit</Text>
+        </TouchableOpacity>
+      </View>
     </SafeAreaView>
   );
 };
@@ -270,4 +260,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default FormPage;
+export default Form;

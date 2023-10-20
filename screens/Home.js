@@ -13,26 +13,10 @@ import {
 } from "react-native";
 import { Card } from "react-native-elements";
 import Icon from "react-native-vector-icons/Ionicons";
-import firebase from "firebase/compat/app";
-import "firebase/compat/firestore";
-import "firebase/compat/storage";
 import { useNavigation } from "@react-navigation/core";
+import { collection, getDocs, query, where } from "firebase/firestore";
 
-const firebaseConfig = {
-  apiKey: "AIzaSyCXQpFF1n301P_jpAk8Gxh2hYr1VdDy-Xg",
-  authDomain: "e-commerce-284f2.firebaseapp.com",
-  projectId: "e-commerce-284f2",
-  storageBucket: "e-commerce-284f2.appspot.com",
-  messagingSenderId: "652686747106",
-  appId: "1:652686747106:web:dbc2cb357c6722f5af85bb",
-};
-
-if (!firebase.apps.length) {
-  firebase.initializeApp(firebaseConfig);
-}
-
-const db = firebase.firestore();
-const storage = firebase.storage();
+import { db } from "../components/auth/FirebaseConfig";
 
 const Home = () => {
   const [topData, setTopData] = useState([]);
@@ -43,29 +27,26 @@ const Home = () => {
   //Add Items to Cart
   // console.log(cartItems);
 
-  
-
   // console.log(cartItems);
+  var arayProd = [];
   const fetchProducts = async () => {
     try {
-      const productsSnapshot = await db.collection("products").get();
-      const data = [];
-
-      for (const doc of productsSnapshot.docs) {
-        const productData = doc.data();
-        const imageRef = storage.refFromURL(productData.image);
-        const imageUrl = await imageRef.getDownloadURL();
-        data.push({
-          id: doc.id,
-          ...productData,
-          imageURL: imageUrl,
-          category: productData.category,
-        });
-      }
-
-      setTopData(data);
+      const q = query(
+        collection(db, "products"),
+        where("category", "==", selectedCategory.trim().toLocaleLowerCase())
+      );
+      const all = collection(db, "products");
+      const querySnapshot = await getDocs(selectedCategory == "All" ? all : q);
+      arayProd = [];
+      querySnapshot.forEach((doc) => {
+        // doc.data() is never undefined for query doc snapshots
+        //console.log("got data");
+        //console.log(doc.id, " => ", doc.data());
+        arayProd.push({ id: doc.id, ...doc.data() });
+      });
+      setTopData(arayProd);
     } catch (error) {
-      console.error("Error fetching data:", error);
+      console.log(error);
     }
   };
 
@@ -78,7 +59,7 @@ const Home = () => {
       style={styles.itemContainer}
       onPress={() => navigation.navigate("ViewItem", { item: item })}
     >
-      <Image source={{ uri: item.imageURL }} style={styles.itemImage} />
+      <Image source={{ uri: item.imageUrl }} style={styles.itemImage} />
       <Text style={styles.itemName}>{item.productName}</Text>
       <Text style={styles.itemName}>Weight: {item.weight}</Text>
       <Text style={styles.itemPrice}>{item.price}</Text>
@@ -93,6 +74,7 @@ const Home = () => {
 
   const filterProductsByCategory = (category) => {
     setSelectedCategory(category);
+    fetchProducts();
   };
 
   const filteredTopData = topData.filter(
@@ -234,7 +216,7 @@ const Home = () => {
             </TouchableOpacity>
           </View>
           <FlatList
-            data={filteredTopData}
+            data={topData}
             renderItem={renderItem}
             keyExtractor={(item) => item.id}
             numColumns={2}
