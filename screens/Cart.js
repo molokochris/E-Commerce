@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import {
   Text,
   Image,
@@ -9,27 +9,50 @@ import {
 } from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useEffect } from "react";
+import { db } from "../components/auth/FirebaseConfig";
+import { collection, getDocs, query, where } from "firebase/firestore";
 
 export default function Cart({ navigation, route }) {
-  const { item } = route.params;
-
+  // const { item } = route.params;
+  // const userID = route.params.userID;
+  const userID = "45DtSb18bQgNRuCN76Py7NWHBG03";
+  // const arrayCartItems = route.params;
+  const [cartItems, setCartItems] = useState([]);
+  // const renderCart = cartItems.map((item) => ({ id: doc.id, ...doc.data() }));
+  const fetchProducts = async () => {
+    console.log("objec2t");
+    try {
+      const q = query(
+        collection(db, "cartItems"),
+        where("userID", "==", userID)
+      );
+      const all = collection(db, "cartItems");
+      const querySnapshot = await getDocs(q);
+      let arrayCart = [];
+      querySnapshot.forEach((doc) => {
+        arrayCart.push({ id: doc.id, ...doc.data() });
+      });
+      console.log("Hello");
+      console.log("arraycart:", arrayCart);
+      setCartItems(arrayCart);
+    } catch (error) {
+      console.log(error);
+    }
+  };
   useEffect(() => {
-    const getData = async () => {
-      try {
-        const value = await AsyncStorage.getItem("cartData");
-        console.log("Storeed Data:", value);
-      } catch (e) {
-        console.log(e);
-      }
-    };
-    getData();
+    console.log("object");
+    fetchProducts();
   }, []);
+
+  // console.log("CartArrayItems", arrayCartItems);
+  console.log(cartItems);
+
   return (
     <View style={styles.container}>
       <View style={styles.navbar}>
         <TouchableOpacity
           style={styles.Btn}
-          onPress={() => navigation.navigate("ViewItem", { item: item })}
+          onPress={() => navigation.goBack()}
         >
           <Image style={styles.bckbtn} source={require("../assets/back.png")} />
         </TouchableOpacity>
@@ -37,36 +60,41 @@ export default function Cart({ navigation, route }) {
       </View>
 
       <ScrollView style={styles.container2}>
-        <View style={styles.itemcont}>
-          <Image style={styles.itemPic} source={{ uri: item.imageUrl }} />
-
-          <Text style={styles.itemName}>{item.productName}</Text>
-
-          <Text style={styles.itemTotal}>
-            Total of{" "}
-            <Text style={styles.itemPrice}>${item.price * item.qty}</Text> by
-            weight
-          </Text>
-          <Text style={styles.itempp}>
-            <Text style={styles.itemPrice}>${item.price}</Text>/kg
-          </Text>
-
-          <Text style={styles.itemQty}>
-            Qty:
-            <Text style={styles.itemPrice}>{item.qty}</Text>
-          </Text>
-        </View>
-        <TouchableOpacity
-          onPress={() => (item.qty -= 1)}
-          disabled={item.qty < 1 ? true : false}
-          style={styles.itmsubtract}
-        ></TouchableOpacity>
-        <TouchableOpacity
-          style={styles.itmchange}
-          onPress={() => navigation.navigate("ViewItem", { item: item })}
-        >
-          <Text style={styles.txtitm}>change</Text>
-        </TouchableOpacity>
+        {cartItems.map((item) => {
+          return (
+            <View
+              style={{
+                width: "100%",
+                height: 150,
+                marginBottom: 4,
+                backgroundColor: "whitesmoke",
+                alignSelf: "center",
+                flexDirection: "row",
+                borderRadius: 8,
+                borderWidth: 0.2,
+              }}
+            >
+              <Image
+                source={{ uri: item.imageUrl }}
+                style={{
+                  width: 140,
+                  height: 140,
+                  alignSelf: "center",
+                  marginLeft: 5,
+                  marginRight: 8,
+                  borderRadius: 8,
+                  resizeMode: "center",
+                }}
+              />
+              <View style={{ alignSelf: "center" }}>
+                <Text>{item.productName}</Text>
+                <Text>{item.weight}</Text>
+                <Text>{item.price}</Text>
+                <Text>{item.qty}</Text>
+              </View>
+            </View>
+          );
+        })}
       </ScrollView>
       <TouchableOpacity
         style={styles.Btn2}
@@ -135,6 +163,7 @@ const styles = StyleSheet.create({
     height: 590,
     backgroundColor: "white",
     bottom: 20,
+    flex: 1,
   },
 
   itemcont: {

@@ -11,6 +11,8 @@ import {
   TouchableOpacity,
 } from "react-native";
 import React, { useState } from "react";
+import Icon from "react-native-vector-icons/FontAwesome";
+import { useNavigation } from "@react-navigation/core";
 
 export default function Checkout() {
   const [date, setDate] = React.useState("");
@@ -19,6 +21,7 @@ export default function Checkout() {
   const [cvv, setCvv] = React.useState("");
   const [exp, setExp] = React.useState("");
   const [zip, setZip] = React.useState("");
+  const navigation = useNavigation();
   const Data = [
     {
       id: "bd7acbea-c1b1-46c2-aed5-3ad53abb28ba",
@@ -140,8 +143,11 @@ export default function Checkout() {
         <Text style={styles.buttonTxt}>Proceed to confirmation</Text>
       </TouchableOpacity>
 
-      <TouchableOpacity style={styles.buttonBCK}>
-        <Text style={styles.buttonBck}>⇦</Text>
+      <TouchableOpacity
+        onPress={() => navigation.goBack()}
+        style={{ position: "absolute", top: 10, left: 10 }}
+      >
+        <Icon name="arrow-left" size={24} color="black" />
       </TouchableOpacity>
     </View>
   );

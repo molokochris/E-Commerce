@@ -17,6 +17,8 @@ import { useState } from "react";
 import { FlatList } from "react-native";
 import { tomato } from "color-name";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import firebase from "firebase/compat/app";
+import "firebase/compat/firestore";
 // import OnboardingItem from "./components/OnboardingItem";
 
 export default function ViewItem({ navigation, route }) {
@@ -31,41 +33,68 @@ export default function ViewItem({ navigation, route }) {
   const decrement = () => {
     setQty(qty - 1);
   };
-  async function saveCartData(item) {
-    try {
-      const cartData = item;
-      await AsyncStorage.setItem("cartData", JSON.stringify(cartData));
-      alert("item added to cart successfully");
-      setIsAdded(true);
-    } catch (error) {
-      console.log(error);
-    }
-  }
+  // const userID = route.params.userID;
+  const userID = "45DtSb18bQgNRuCN76Py7NWHBG03";
 
+  console.log("ViewItemID:", userID);
   // async function saveCartData(item) {
   //   try {
-  //     // Retrieve existing cart data from AsyncStorage and parse it
-  //     const cartData = await AsyncStorage.getItem("cartData");
-  //     let cartArray = [];
-
-  //     if (cartData) {
-  //       cartArray = JSON.parse(cartData);
-  //     }
-
-  //     // Add the new item to the cart
-  //     cartArray.push(item);
-
-  //     await AsyncStorage.setItem("cartData", JSON.stringify(cartArray));
-  //     alert("Item added to the cart successfully");
+  //     const cartData = item;
+  //     await AsyncStorage.setItem("cartData", JSON.stringify(cartData));
+  //     alert("item added to cart successfully");
   //     setIsAdded(true);
   //   } catch (error) {
   //     console.log(error);
   //   }
   // }
 
+  async function saveCartData(item) {
+    try {
+      // Retrieve existing cart data from AsyncStorage and parse it
+      const cartData = await AsyncStorage.getItem("cartData");
+      let cartArray = [];
+
+      if (cartData) {
+        cartArray = JSON.parse(cartData);
+      }
+
+      // Add the new item to the cart
+      cartArray.push(item);
+
+      await AsyncStorage.setItem("cartData", JSON.stringify(cartArray));
+      alert("Item added to the cart successfully");
+      setIsAdded(true);
+    } catch (error) {
+      console.log(error);
+    }
+  }
+
   const addToCart = (item) => {
     item.qty = qty;
-    saveCartData(item);
+    item.userID = userID.uid;
+
+    firebase
+      .firestore()
+      .collection("cartItems")
+      .add(item)
+      .then(() => {
+        setIsAdded(true);
+        alert("product added successfully!");
+      })
+      .catch((error) => {
+        console.log("Error adding document: ", error);
+      });
+    //           })
+    //           .catch((error) => {
+    //             console.log("Error getting download URL: ", error);
+    //           });
+    //       }
+    //     );
+    //   } else {
+    //     Alert.alert("Please fill in all fields");
+    //   }
+    // };
+    // saveCartData(item);
 
     // navigation.navigate("Cart", { item: item });
     console.log(item);
@@ -227,7 +256,7 @@ export default function ViewItem({ navigation, route }) {
           }}
           onPress={() => {
             isAdded
-              ? navigation.navigate("Cart", { item: item })
+              ? navigation.navigate("Cart", { item: item, userID })
               : addToCart(item);
           }}
         >

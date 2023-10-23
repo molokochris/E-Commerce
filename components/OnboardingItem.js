@@ -1,25 +1,13 @@
-import { View, Text, Image, useWindowDimensions } from "react-native";
+import { View } from "react-native";
 import React from "react";
 import { StyleSheet } from "react-native";
 
-export default function OnboardingItem(item) {
-  const { width } = useWindowDimensions();
+export default function OnboardingItem() {
   return (
-    <View style={[{ width }]}>
-      <Image
-        source={item.image}
-        style={[styles.image, { width, resizeMode: "contain" }]}
-      />
-      {/* <View style={{ flex: 0.3 }}>
-        <Text>{item.title}</Text>
-      </View> */}
+    <View style={{ flex: 1 }}>
+      <Text>SD</Text>
     </View>
   );
 }
 
-const styles = StyleSheet.create({
-  image: {
-    flex: 0.7,
-    justifyContent: "center",
-  },
-});
+const styles = StyleSheet.create({});

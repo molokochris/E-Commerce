@@ -4,8 +4,8 @@ import { StyleSheet, Text } from "react-native";
 import { View, TouchableOpacity } from "react-native";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import { useNavigation } from "@react-navigation/native";
-import firebase from 'firebase/compat/app';
-import 'firebase/compat/auth';
+import firebase from "firebase/compat/app";
+import "firebase/compat/auth";
 
 export default function Login() {
   const navigation = useNavigation();
@@ -20,7 +20,7 @@ export default function Login() {
     projectId: "e-commerce-284f2",
     storageBucket: "e-commerce-284f2.appspot.com",
     messagingSenderId: "652686747106",
-    appId: "1:652686747106:web:dbc2cb357c6722f5af85bb"
+    appId: "1:652686747106:web:dbc2cb357c6722f5af85bb",
   };
 
   if (!firebase.apps.length) {
@@ -35,9 +35,16 @@ export default function Login() {
         alert("Logged in as admin");
         navigation.navigate("Form");
       } else {
-        setLoading(false);
-        alert("Logged in as a regular user");
-        navigation.navigate("Home");
+        const response = await firebase
+          .auth()
+          .signInWithEmailAndPassword(email, password);
+        if (response.user.uid) {
+          setLoading(false);
+          alert("Logged in as a regular user");
+          navigation.navigate("Home", { uid: response.user.uid });
+        } else {
+          console.log("login failed:", response.message);
+        }
       }
     } catch (error) {
       console.log(error);
@@ -45,7 +52,6 @@ export default function Login() {
       setLoading(false);
     }
   };
-  
 
   return (
     <View style={styles.container}>

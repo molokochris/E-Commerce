@@ -18,12 +18,14 @@ import { collection, getDocs, query, where } from "firebase/firestore";
 
 import { db } from "../components/auth/FirebaseConfig";
 
-const Home = () => {
+const Home = ({ route }) => {
   const [topData, setTopData] = useState([]);
   const [recomData, setRecomData] = useState([]);
   const [selectedCategory, setSelectedCategory] = useState("All");
   const navigation = useNavigation();
 
+  const userID = route.params;
+  console.log(userID);
   //Add Items to Cart
   // console.log(cartItems);
 
@@ -57,7 +59,9 @@ const Home = () => {
   const renderItem = ({ item }) => (
     <Pressable
       style={styles.itemContainer}
-      onPress={() => navigation.navigate("ViewItem", { item: item })}
+      onPress={() =>
+        navigation.navigate("ViewItem", { item: item, userID: userID })
+      }
     >
       <Image source={{ uri: item.imageUrl }} style={styles.itemImage} />
       <Text style={styles.itemName}>{item.productName}</Text>
@@ -238,7 +242,7 @@ const Home = () => {
         <TouchableOpacity>
           <Icon style={{ color: "lightgrey" }} name="search" size={30} />
         </TouchableOpacity>
-        <TouchableOpacity>
+        <TouchableOpacity onPress={() => navigation.navigate("Cart")}>
           <Icon style={{ color: "lightgrey" }} name="cart" size={30} />
         </TouchableOpacity>
         <TouchableOpacity>
