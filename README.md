@@ -2,9 +2,12 @@
 
 **Contributors:**
 
-Moloko Chris Poopedi
-Mulalo Cecil Tshigoba 
-[contributor 2]
+[Moloko Chris Poopedi](https://www.github.com/molokochris) 
+[Mulalo Cecil Tshigoba](https://www.github.com/mulalocecil)  
+[Khomotso Jane Sekhaolelo](https://github.com/khomotsojane)
+[Innocent Seaba](https://github.com/unidentified23)
+[Morongwa Abigail Mogotlane](https://github.com/morongoaabigail)
+[Elesta Mello]()
 ...
 
 **Overview**
