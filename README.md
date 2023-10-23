@@ -3,7 +3,7 @@
 **Contributors:**
 
 Moloko Chris Poopedi
-[contributor 1]
+Mulalo Cecil Tshigoba 
 [contributor 2]
 ...
 
