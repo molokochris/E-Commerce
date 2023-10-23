@@ -87,10 +87,12 @@ export default function Cart({ navigation, route }) {
                 }}
               />
               <View style={{ alignSelf: "center" }}>
-                <Text>{item.productName}</Text>
-                <Text>{item.weight}</Text>
-                <Text>{item.price}</Text>
-                <Text>{item.qty}</Text>
+                <Text style={{ fontWeight: "bold", fontSize: 20 }}>
+                  {item.productName}
+                </Text>
+                <Text style={{ fontSize: 16 }}>{item.weight}</Text>
+                <Text style={{ fontSize: 16 }}>{item.price}</Text>
+                <Text style={{ fontSize: 16 }}>{item.qty}</Text>
               </View>
             </View>
           );

@@ -139,7 +139,12 @@ export default function Checkout() {
         />
       </View>
 
-      <TouchableOpacity style={styles.button}>
+      <TouchableOpacity
+        style={styles.button}
+        onPress={() =>
+          navigation.navigate("CheckoutSuccess", { status: "success" })
+        }
+      >
         <Text style={styles.buttonTxt}>Proceed to confirmation</Text>
       </TouchableOpacity>
 
@@ -347,7 +352,7 @@ const styles = StyleSheet.create({
   button: {
     top: "10%",
     alignItems: "center",
-    backgroundColor: "#4169e1",
+    backgroundColor: "#219653",
     paddingTop: "5%",
     height: "10%",
     borderRadius: 10,

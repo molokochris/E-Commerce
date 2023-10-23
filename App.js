@@ -13,6 +13,8 @@ import ProductsPage from "./components/admin/Products";
 // import TestForm from "./components/admin/TestForm";
 
 import Cart from "./screens/Cart";
+import CheckoutConfirmation from "./screens/CheckoutSuccess";
+import CheckoutSuccess from "./screens/CheckoutSuccess";
 const Stack = createStackNavigator();
 
 const App = () => {
@@ -67,6 +69,11 @@ const App = () => {
         <Stack.Screen
           name="Products"
           component={ProductsPage}
+          options={{ headerShown: false }}
+        />
+        <Stack.Screen
+          name="CheckoutSuccess"
+          component={CheckoutSuccess}
           options={{ headerShown: false }}
         />
       </Stack.Navigator>
