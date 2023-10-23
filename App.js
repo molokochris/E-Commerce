@@ -13,14 +13,13 @@ import ProductsPage from "./components/admin/Products";
 // import TestForm from "./components/admin/TestForm";
 
 import Cart from "./screens/Cart";
-import CheckoutConfirmation from "./screens/CheckoutSuccess";
 import CheckoutSuccess from "./screens/CheckoutSuccess";
 const Stack = createStackNavigator();
 
 const App = () => {
   return (
     <NavigationContainer>
-      <Stack.Navigator initialRouteName="Cart">
+      <Stack.Navigator initialRouteName="Welcome">
         <Stack.Screen
           name="Welcome"
           component={Welcome}

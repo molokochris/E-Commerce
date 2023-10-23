@@ -22,43 +22,12 @@ export default function Checkout() {
   const [exp, setExp] = React.useState("");
   const [zip, setZip] = React.useState("");
   const navigation = useNavigation();
-  const Data = [
-    {
-      id: "bd7acbea-c1b1-46c2-aed5-3ad53abb28ba",
-      title: "top notch sweater",
-      price: "$10",
-      QTY: "1",
-    },
-    {
-      id: "3ac68afc-c605-48d3-a4f8-fbd91aa97f63",
-      title: "brocoli",
-      price: "$10",
-      QTY: "5",
-    },
-    {
-      id: "58694a0f-3da1-471f-bd96-145571e29d72",
-      title: "carrots",
-      price: "$10",
-      QTY: "4",
-    },
-    {
-      id: "58694a0f-3da1-471f-bd96-145571e29d",
-      title: "carrots",
-      price: "$10",
-      QTY: "2",
-    },
-    {
-      id: "58694a0f-3da1-471f-bd96",
-      title: "carrots",
-      price: "$10",
-      QTY: "1",
-    },
-  ];
+
   return (
     <View style={styles.container}>
       <View style={styles.detailsz}>
         <Text style={styles.orderH}>order summary</Text>
-        <Text style={styles.orderP}>$48.59</Text>
+        <Text style={styles.orderP}>$0.00</Text>
         <FlatList
           style={{
             flexGrow: 0,
@@ -66,7 +35,7 @@ export default function Checkout() {
             top: "10%",
             height: "15%",
           }}
-          data={Data}
+          // data={Data}
           renderItem={({ item }) => (
             <View style={styles.contV}>
               <Text style={styles.orderNQ}>{item.title}</Text>
@@ -130,7 +99,7 @@ export default function Checkout() {
       </View>
       <View style={styles.card}>
         <Text style={styles.cardNo}>1111 1111 1111 1111</Text>
-        <Text style={styles.cardHo}>nigga NY</Text>
+        <Text style={styles.cardHo}>Jonas NY</Text>
         <Text style={styles.cardExp}> Exp:10 36</Text>
         <Text style={styles.cardCvv}>CVV: 123</Text>
         <Image
